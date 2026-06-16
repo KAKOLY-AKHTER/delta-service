@@ -108,9 +108,25 @@ export default function Footer() {
 
           {/* Col 1: Logo + about */}
           <div className={`sm:col-span-2 lg:col-span-1 anim-fade-up ${inView ? 'anim-in' : ''}`} style={{ transitionDelay: '0.15s' }}>
-            <div className="inline-flex items-center justify-center rounded-2xl mb-5"
-              style={{ background: 'white', padding: '10px 18px', boxShadow: '0 8px 28px rgba(0,0,0,0.25)' }}>
-              <img src={logo} alt="Delta Care Transport" style={{ height: '64px', width: 'auto' }} />
+            <div className="relative mb-6" style={{ width: '130px', height: '130px' }}>
+              {/* Outer glow ring */}
+              <div style={{
+                position: 'absolute', inset: '-5px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                opacity: 0.3,
+              }} />
+              <div style={{
+                position: 'relative', zIndex: 1,
+                width: '130px', height: '130px',
+                borderRadius: '50%',
+                background: 'white',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.35), 0 0 0 3px #f97316',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+              }}>
+                <img src={logo} alt="Delta Care Transport" style={{ width: '118px', height: '118px', objectFit: 'contain' }} />
+              </div>
             </div>
             <p className="font-black mb-3 leading-snug" style={{ color: '#f97316', fontSize: '15px' }}>
               Connecting People with Safe &amp;<br />Reliable Transportation.
