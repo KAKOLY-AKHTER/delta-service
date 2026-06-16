@@ -14,14 +14,14 @@ export default function Navbar() {
           <div className="relative shrink-0 mr-6 lg:mr-10" style={{ width: '130px', height: '76px' }}>
             {/* Outer glow ring */}
             <div style={{
-              position: 'absolute', top: '-4px', left: '-4px', zIndex: 9,
+              position: 'absolute', top: '2px', left: '-4px', zIndex: 9,
               width: '132px', height: '132px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, #f97316, #ea580c)',
               opacity: 0.25,
             }} />
             <div style={{
-              position: 'absolute', top: '0', left: 0, zIndex: 10,
+              position: 'absolute', top: '6px', left: 0, zIndex: 10,
               width: '124px', height: '124px',
               borderRadius: '50%',
               background: 'white',
