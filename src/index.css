@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* ── Scroll Animation Base States ── */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(44px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-fade-left {
+  opacity: 0;
+  transform: translateX(-54px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-fade-right {
+  opacity: 0;
+  transform: translateX(54px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-fade-in {
+  opacity: 0;
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-scale-in {
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Triggered (in-view) ── */
+.anim-in {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ── Hero load animation ── */
+@keyframes heroSlideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-anim {
+  animation: heroSlideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Navbar slide-down ── */
+@keyframes navSlideDown {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-anim {
+  animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
