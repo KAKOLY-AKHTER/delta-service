@@ -45,31 +45,42 @@ export default function BookingForm() {
   const [ref, inView] = useInView()
   return (
     <section className="overflow-hidden" style={{ background: '#0a2558' }} ref={ref}>
-      <div className="flex items-stretch" style={{ minHeight: '760px' }}>
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: '760px' }}>
 
         {/* ══════ LEFT PANEL ══════ */}
-        <div className={`relative flex flex-col justify-between shrink-0 anim-fade-left ${inView ? 'anim-in' : ''}`} style={{
-          width: '40%',
-          padding: '72px 52px',
-          background: 'linear-gradient(160deg, #0d3070 0%, #0a2558 60%, #071a3e 100%)',
-        }}>
+        <div
+          className={`relative flex flex-col justify-between shrink-0 anim-fade-left ${inView ? 'anim-in' : ''}`}
+          style={{
+            width: '100%',
+            padding: '52px 20px',
+            background: 'linear-gradient(160deg, #0d3070 0%, #0a2558 60%, #071a3e 100%)',
+          }}
+        >
+          <div className="lg:hidden" style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5"
+              style={{ background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)' }}>
+              <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
+              <span className="text-orange-400 font-bold text-xs tracking-widest uppercase">Schedule a Trip</span>
+            </div>
+            <h2 className="font-black text-white leading-tight mb-3" style={{ fontSize: '30px' }}>
+              Book Your Ride <span style={{ color: '#f97316' }}>In Minutes</span>
+            </h2>
+            <div className="flex gap-6 mt-4">
+              {contactInfo.map((c) => (
+                <div key={c.label} className="flex items-center gap-2">
+                  <div className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(249,115,22,0.2)' }}>
+                    {c.icon}
+                  </div>
+                  <p className="text-white font-bold text-xs">{c.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          {/* Decorative circle */}
-          <div className="absolute rounded-full" style={{
-            width: '400px', height: '400px',
-            background: 'rgba(249,115,22,0.06)',
-            top: '-100px', right: '-150px',
-            border: '1px solid rgba(249,115,22,0.1)',
-          }} />
-          <div className="absolute rounded-full" style={{
-            width: '200px', height: '200px',
-            background: 'rgba(249,115,22,0.05)',
-            bottom: '60px', left: '-60px',
-            border: '1px solid rgba(249,115,22,0.08)',
-          }} />
+          {/* Desktop left panel content */}
+          <div className="relative z-10 hidden lg:block" style={{ padding: '20px 32px' }}>
+            <div className="absolute rounded-full" style={{ width: '400px', height: '400px', background: 'rgba(249,115,22,0.06)', top: '-100px', right: '-150px', border: '1px solid rgba(249,115,22,0.1)' }} />
 
-          <div className="relative z-10">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-6"
               style={{ background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)' }}>
               <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
@@ -86,7 +97,6 @@ export default function BookingForm() {
               Safe, reliable, and on-time — every trip, every time.
             </p>
 
-            {/* Steps */}
             <div className="flex flex-col gap-4 mb-10">
               {steps.map((s, i) => (
                 <div key={s.num} className="flex items-center gap-4">
@@ -95,19 +105,14 @@ export default function BookingForm() {
                     {s.num}
                   </div>
                   <p className="text-white font-semibold text-sm">{s.label}</p>
-                  {i < steps.length - 1 && (
-                    <div className="absolute" style={{ display: 'none' }} />
-                  )}
                 </div>
               ))}
             </div>
 
-            {/* Contact info */}
             <div className="flex flex-col gap-5">
               {contactInfo.map((c) => (
                 <div key={c.label} className="flex items-center gap-4">
-                  <div className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: 'rgba(249,115,22,0.2)' }}>
+                  <div className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(249,115,22,0.2)' }}>
                     {c.icon}
                   </div>
                   <div>
@@ -119,13 +124,10 @@ export default function BookingForm() {
             </div>
           </div>
 
-          {/* Bottom rating */}
-          <div className="relative z-10 flex items-center gap-4 mt-10 pt-8"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div className="relative z-10 hidden lg:flex items-center gap-4 mt-10 pt-8" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '32px 32px 0' }}>
             <div className="flex -space-x-2">
               {['#f97316','#0d3070','#1e5799'].map((c, i) => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-[#0a2558] flex items-center justify-center text-white font-bold text-xs"
-                  style={{ background: c }}>
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-[#0a2558] flex items-center justify-center text-white font-bold text-xs" style={{ background: c }}>
                   {['A','B','C'][i]}
                 </div>
               ))}
@@ -144,42 +146,34 @@ export default function BookingForm() {
         </div>
 
         {/* ══════ RIGHT PANEL: Form ══════ */}
-        <div className={`flex-1 flex items-center anim-fade-right ${inView ? 'anim-in' : ''}`} style={{ padding: '60px 52px', background: '#f8faff', transitionDelay: '0.15s' }}>
+        <div
+          className={`flex-1 flex items-center anim-fade-right ${inView ? 'anim-in' : ''}`}
+          style={{ padding: '40px 20px', background: '#f8faff', transitionDelay: '0.15s' }}
+        >
           <div className="w-full" style={{ maxWidth: '560px', margin: '0 auto' }}>
 
-            <h3 className="font-black text-[#0a2558] mb-1" style={{ fontSize: '22px' }}>
-              Ride Booking Form
-            </h3>
-            <p className="text-gray-600 text-sm mb-8">All fields are required for booking confirmation.</p>
+            <h3 className="font-black text-[#0a2558] mb-1" style={{ fontSize: '22px' }}>Ride Booking Form</h3>
+            <p className="text-gray-600 text-sm mb-6">All fields are required for booking confirmation.</p>
 
-            {/* Row 1 */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Full Name</label>
-                <input type="text" placeholder="John Smith"
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+                <input type="text" placeholder="John Smith" className="w-full rounded-xl px-4 py-3 text-sm outline-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Phone Number</label>
-                <input type="tel" placeholder="(123) 456-7890"
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+                <input type="tel" placeholder="(123) 456-7890" className="w-full rounded-xl px-4 py-3 text-sm outline-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
               </div>
             </div>
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Email Address</label>
-                <input type="email" placeholder="john@email.com"
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+                <input type="email" placeholder="john@email.com" className="w-full rounded-xl px-4 py-3 text-sm outline-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Service Type</label>
-                <select className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }}>
+                <select className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }}>
                   <option value="">Select service...</option>
                   <option>Medical Appointment</option>
                   <option>Dialysis Treatment</option>
@@ -192,72 +186,46 @@ export default function BookingForm() {
               </div>
             </div>
 
-            {/* Row 3 */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Date</label>
-                <input type="date"
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+                <input type="date" className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Time</label>
-                <input type="time"
-                  className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+                <input type="time" className="w-full rounded-xl px-4 py-3 text-sm outline-none text-gray-600" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
               </div>
             </div>
 
-            {/* Pickup */}
             <div className="mb-4">
               <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Pickup Address</label>
               <div className="relative">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" className="w-4 h-4 absolute" style={{ top: '14px', left: '14px' }}>
                   <circle cx="12" cy="10" r="3" /><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
                 </svg>
-                <input type="text" placeholder="Enter pickup location"
-                  className="w-full rounded-xl py-3 text-sm outline-none"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px', paddingLeft: '38px', paddingRight: '16px' }} />
+                <input type="text" placeholder="Enter pickup location" className="w-full rounded-xl py-3 text-sm outline-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px', paddingLeft: '38px', paddingRight: '16px' }} />
               </div>
             </div>
 
-            {/* Dropoff */}
             <div className="mb-4">
               <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Drop-off Address</label>
               <div className="relative">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2" className="w-4 h-4 absolute" style={{ top: '14px', left: '14px' }}>
                   <circle cx="12" cy="10" r="3" /><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
                 </svg>
-                <input type="text" placeholder="Enter drop-off location"
-                  className="w-full rounded-xl py-3 text-sm outline-none"
-                  style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px', paddingLeft: '38px', paddingRight: '16px' }} />
+                <input type="text" placeholder="Enter drop-off location" className="w-full rounded-xl py-3 text-sm outline-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px', paddingLeft: '38px', paddingRight: '16px' }} />
               </div>
             </div>
 
-            {/* Notes */}
             <div className="mb-6">
               <label className="block text-xs font-bold text-[#0a2558] uppercase tracking-widest mb-2">Special Needs / Notes</label>
-              <textarea rows={3} placeholder="Wheelchair access, oxygen needed, etc."
-                className="w-full rounded-xl px-4 py-3 text-sm outline-none resize-none"
-                style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
+              <textarea rows={3} placeholder="Wheelchair access, oxygen needed, etc." className="w-full rounded-xl px-4 py-3 text-sm outline-none resize-none" style={{ border: '1.5px solid #e2e8f0', background: 'white', fontSize: '14px' }} />
             </div>
 
-            {/* Submit */}
-            <button
-              className="w-full font-black text-white rounded-xl tracking-widest transition-colors"
-              style={{
-                padding: '16px',
-                fontSize: '13px',
-                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                boxShadow: '0 8px 24px rgba(249,115,22,0.35)',
-              }}
-            >
+            <button className="w-full font-black text-white rounded-xl tracking-widest" style={{ padding: '16px', fontSize: '13px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', boxShadow: '0 8px 24px rgba(249,115,22,0.35)' }}>
               CONFIRM MY BOOKING →
             </button>
-
-            <p className="text-center text-gray-500 text-sm mt-4">
-              🔒 Your information is safe and secure with us.
-            </p>
+            <p className="text-center text-gray-500 text-sm mt-4">🔒 Your information is safe and secure with us.</p>
           </div>
         </div>
 

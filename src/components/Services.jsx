@@ -15,7 +15,7 @@ const services = [
   {
     title: 'Dialysis Treatments',
     desc: 'Reliable rides to and from dialysis centers, ensuring you never miss a treatment.',
-    img: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=700&q=85',
+    img: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=700&q=85',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-7 h-7">
         <circle cx="12" cy="5" r="3" /><path d="M12 8v6M9 22l3-8 3 8M5 13h14" />
@@ -71,82 +71,47 @@ const services = [
 export default function Services() {
   const [ref, inView] = useInView()
   return (
-    <section style={{ padding: '100px 52px', background: '#0a2558' }} ref={ref}>
+    <section className="py-16 lg:py-[100px] px-5 md:px-10 lg:px-[52px]" style={{ background: '#0a2558' }} ref={ref}>
 
       {/* ── Header ── */}
-      <div className={`flex items-center justify-between mb-14 anim-fade-up ${inView ? 'anim-in' : ''}`}>
+      <div className={`flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 lg:mb-14 anim-fade-up ${inView ? 'anim-in' : ''}`}>
         <div>
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5"
             style={{ background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.35)' }}>
             <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
             <span className="text-orange-400 font-bold text-xs tracking-widest uppercase">What We Offer</span>
           </div>
-          <h2 className="font-black text-white leading-tight" style={{ fontSize: '42px' }}>
+          <h2 className="font-black text-white leading-tight" style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
             Our Transportation <span style={{ color: '#f97316' }}>Services</span>
           </h2>
         </div>
-        <p className="text-blue-100 text-sm leading-relaxed" style={{ maxWidth: '320px', fontSize: '15px' }}>
+        <p className="text-blue-100 text-sm leading-relaxed md:text-right" style={{ maxWidth: '320px', fontSize: '15px' }}>
           From medical appointments to everyday errands — we provide safe, reliable, and
           comfortable rides for every need.
         </p>
       </div>
 
       {/* ── Cards Grid ── */}
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {services.map((s, i) => (
           <div
             key={s.title}
             className={`group relative overflow-hidden rounded-3xl anim-fade-up ${inView ? 'anim-in' : ''}`}
-            style={{ height: '340px', cursor: 'pointer', transitionDelay: `${0.1 + i * 0.1}s` }}
+            style={{ height: '300px', cursor: 'pointer', transitionDelay: `${0.1 + i * 0.1}s` }}
           >
-            {/* Background image */}
-            <img
-              src={s.img}
-              alt={s.title}
-              className="absolute inset-0 w-full h-full"
-              style={{ objectFit: 'cover', objectPosition: 'center', transition: 'transform 0.6s ease' }}
-            />
-
-            {/* Dark overlay — stronger at bottom */}
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(to top, rgba(5,15,40,0.96) 0%, rgba(5,15,40,0.55) 45%, rgba(5,15,40,0.15) 100%)',
-            }} />
-
-            {/* Number watermark */}
-            <div className="absolute font-black" style={{
-              top: '14px', right: '18px',
-              color: 'rgba(255,255,255,0.10)',
-              fontSize: '72px', lineHeight: 1,
-              fontFamily: 'Arial Black, sans-serif',
-              userSelect: 'none',
-            }}>
+            <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full" style={{ objectFit: 'cover', objectPosition: 'center' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(5,15,40,0.96) 0%, rgba(5,15,40,0.55) 45%, rgba(5,15,40,0.15) 100%)' }} />
+            <div className="absolute font-black" style={{ top: '14px', right: '18px', color: 'rgba(255,255,255,0.10)', fontSize: '72px', lineHeight: 1, userSelect: 'none' }}>
               {String(i + 1).padStart(2, '0')}
             </div>
-
-            {/* Icon top-left */}
-            <div className="absolute flex items-center justify-center rounded-2xl" style={{
-              top: '20px', left: '20px',
-              width: '52px', height: '52px',
-              background: '#f97316',
-              boxShadow: '0 8px 24px rgba(249,115,22,0.5)',
-            }}>
+            <div className="absolute flex items-center justify-center rounded-2xl" style={{ top: '20px', left: '20px', width: '52px', height: '52px', background: '#f97316', boxShadow: '0 8px 24px rgba(249,115,22,0.5)' }}>
               {s.icon}
             </div>
-
-            {/* Content bottom */}
-            <div className="absolute bottom-0 left-0 right-0" style={{ padding: '0 22px 24px' }}>
-              {/* Orange divider line */}
-              <div style={{
-                height: '2px', width: '36px',
-                background: '#f97316',
-                borderRadius: '2px',
-                marginBottom: '10px',
-              }} />
-              <h3 className="font-black text-white mb-2" style={{ fontSize: '18px' }}>{s.title}</h3>
-              <p className="text-blue-100 leading-relaxed" style={{ fontSize: '14px' }}>{s.desc}</p>
-
-              {/* Arrow link */}
-              <div className="flex items-center gap-2 mt-4">
+            <div className="absolute bottom-0 left-0 right-0" style={{ padding: '0 22px 22px' }}>
+              <div style={{ height: '2px', width: '36px', background: '#f97316', borderRadius: '2px', marginBottom: '10px' }} />
+              <h3 className="font-black text-white mb-1" style={{ fontSize: '17px' }}>{s.title}</h3>
+              <p className="text-blue-100 leading-relaxed" style={{ fontSize: '13px' }}>{s.desc}</p>
+              <div className="flex items-center gap-2 mt-3">
                 <span className="text-orange-400 font-bold text-xs tracking-widest uppercase">Learn More</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" className="w-4 h-4">
                   <path d="M5 12h14M12 5l7 7-7 7" />
@@ -157,20 +122,18 @@ export default function Services() {
         ))}
       </div>
 
-      {/* ── Bottom CTA strip ── */}
-      <div className="flex items-center justify-between mt-12 rounded-2xl px-8 py-5"
-        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      {/* ── Bottom CTA ── */}
+      <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mt-10 rounded-2xl px-6 py-5 anim-fade-up ${inView ? 'anim-in' : ''}`}
+        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', transitionDelay: '0.7s' }}>
         <div>
           <p className="text-white font-bold text-base">Need a ride? We're available 24/7.</p>
           <p className="text-blue-100 text-sm mt-1">Call us or book online — fast, easy, and reliable.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors tracking-widest"
-            style={{ padding: '13px 28px', fontSize: '13px' }}>
+          <button className="bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors tracking-widest" style={{ padding: '12px 22px', fontSize: '13px' }}>
             BOOK A RIDE
           </button>
-          <button className="font-bold rounded-xl tracking-widest transition-colors"
-            style={{ padding: '13px 28px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}>
+          <button className="font-bold rounded-xl tracking-widest transition-colors" style={{ padding: '12px 22px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}>
             CALL NOW
           </button>
         </div>

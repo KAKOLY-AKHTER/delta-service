@@ -72,16 +72,16 @@ const stats = [
 export default function WhyChooseUs() {
   const [ref, inView] = useInView()
   return (
-    <section className="overflow-hidden" style={{ padding: '100px 52px', background: '#fff' }} ref={ref}>
+    <section className="overflow-hidden py-16 lg:py-[100px] px-5 md:px-10 lg:px-[52px]" style={{ background: '#fff' }} ref={ref}>
 
       {/* ── Header ── */}
-      <div className={`text-center mb-16 anim-fade-up ${inView ? 'anim-in' : ''}`}>
+      <div className={`text-center mb-12 lg:mb-16 anim-fade-up ${inView ? 'anim-in' : ''}`}>
         <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5"
           style={{ background: '#fff4ec', border: '1px solid #fed7aa' }}>
           <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
           <span className="text-orange-500 font-bold text-xs tracking-widest uppercase">Our Advantages</span>
         </div>
-        <h2 className="font-black text-[#0a2558] leading-tight" style={{ fontSize: '42px' }}>
+        <h2 className="font-black text-[#0a2558] leading-tight" style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}>
           Why Clients Choose<br />
           <span style={{ color: '#f97316' }}>Delta Care Transport</span>
         </h2>
@@ -91,67 +91,52 @@ export default function WhyChooseUs() {
         </p>
       </div>
 
-      {/* ── Main layout: Left image + Right cards ── */}
-      <div className="flex gap-12 items-stretch">
+      {/* ── Main layout ── */}
+      <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
 
-        {/* Left: Image block */}
-        <div className={`shrink-0 relative rounded-3xl overflow-hidden anim-fade-left ${inView ? 'anim-in' : ''}`} style={{ width: '36%', transitionDelay: '0.1s' }}>
+        {/* Left: Image */}
+        <div className={`w-full lg:w-[36%] lg:shrink-0 relative rounded-3xl overflow-hidden anim-fade-left ${inView ? 'anim-in' : ''}`}
+          style={{ height: '320px', transitionDelay: '0.1s' }}
+        >
           <img
             src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&q=85"
             alt="Why choose us"
             className="w-full h-full"
             style={{ objectFit: 'cover', objectPosition: 'center' }}
           />
-
-          {/* Dark overlay */}
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to top, rgba(10,37,88,0.95) 0%, rgba(10,37,88,0.4) 50%, transparent 80%)',
-          }} />
-
-          {/* Stats grid over image */}
-          <div className="absolute bottom-0 left-0 right-0" style={{ padding: '28px' }}>
-            <p className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-4">Our Numbers</p>
-            <div className="grid grid-cols-2 gap-3">
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.95) 0%, rgba(10,37,88,0.4) 50%, transparent 80%)' }} />
+          <div className="absolute bottom-0 left-0 right-0" style={{ padding: '24px' }}>
+            <p className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-3">Our Numbers</p>
+            <div className="grid grid-cols-2 gap-2">
               {stats.map((s) => (
-                <div key={s.label} className="rounded-2xl p-4"
+                <div key={s.label} className="rounded-2xl p-3"
                   style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)' }}>
-                  <p className="font-black text-white leading-none mb-1" style={{ fontSize: '26px' }}>{s.num}</p>
+                  <p className="font-black text-white leading-none mb-1" style={{ fontSize: '22px' }}>{s.num}</p>
                   <p className="text-blue-100 text-xs font-medium">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Top badge */}
-          <div className="absolute top-6 left-6 flex items-center gap-2 rounded-full px-4 py-2"
+          <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5"
             style={{ background: '#f97316', boxShadow: '0 6px 20px rgba(249,115,22,0.4)' }}>
-            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4">
+            <svg viewBox="0 0 24 24" fill="white" className="w-3 h-3">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            <span className="text-white font-bold text-xs tracking-wide">#1 Trusted Transport</span>
+            <span className="text-white font-bold text-xs">#1 Trusted Transport</span>
           </div>
         </div>
 
-        {/* Right: Reason cards */}
-        <div className="flex-1 grid grid-cols-2 gap-4 content-start">
+        {/* Right: Cards */}
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 content-start">
           {reasons.map((r, i) => (
             <div
               key={r.title}
               className={`group rounded-2xl p-5 transition-all duration-300 hover:shadow-lg anim-fade-up ${inView ? 'anim-in' : ''}`}
-              style={{
-                background: '#f8faff',
-                border: '1px solid #e8eef8',
-                transitionDelay: `${0.2 + i * 0.08}s`,
-              }}
+              style={{ background: '#f8faff', border: '1px solid #e8eef8', transitionDelay: `${0.2 + i * 0.08}s` }}
             >
               <div className="flex items-start gap-4">
-                {/* Icon */}
                 <div className="shrink-0 rounded-xl flex items-center justify-center"
-                  style={{
-                    width: '52px', height: '52px',
-                    background: '#fff4ec',
-                    border: '1px solid #fed7aa',
-                  }}>
+                  style={{ width: '52px', height: '52px', background: '#fff4ec', border: '1px solid #fed7aa' }}>
                   {r.icon}
                 </div>
                 <div className="flex-1">
@@ -164,14 +149,12 @@ export default function WhyChooseUs() {
                   <p className="text-gray-600 leading-relaxed" style={{ fontSize: '14px' }}>{r.desc}</p>
                 </div>
               </div>
-              {/* Bottom accent */}
               <div className="mt-4 h-px" style={{ background: 'linear-gradient(to right, #f97316, transparent)' }} />
             </div>
           ))}
         </div>
 
       </div>
-
     </section>
   )
 }

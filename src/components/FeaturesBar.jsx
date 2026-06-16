@@ -58,7 +58,7 @@ const features = [
 export default function FeaturesBar() {
   const [ref, inView] = useInView()
   return (
-    <section style={{ padding: '0 52px 40px' }} ref={ref}>
+    <section className="px-4 md:px-8 lg:px-[52px] pb-10" ref={ref}>
       <div style={{ position: 'relative' }}>
         <div
           className={`anim-fade-up ${inView ? 'anim-in' : ''}`}
@@ -70,23 +70,23 @@ export default function FeaturesBar() {
             zIndex: 1,
           }}
         />
-        <div
-          className="rounded-3xl"
-          style={{ background: '#0a2558', position: 'relative', zIndex: 2, marginTop: '-10px' }}
-        >
-          <div className="flex items-center justify-between gap-2 px-10 py-8">
+        <div className="rounded-3xl" style={{ background: '#0a2558', position: 'relative', zIndex: 2, marginTop: '-10px' }}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-0 px-6 lg:px-10 py-6 lg:py-8">
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className={`flex items-center gap-4 flex-1 anim-fade-up ${inView ? 'anim-in' : ''}`}
-                style={{ transitionDelay: `${0.1 + i * 0.1}s` }}
+                className={`flex items-center gap-3 py-4 lg:py-0 anim-fade-up ${inView ? 'anim-in' : ''}`}
+                style={{
+                  transitionDelay: `${0.1 + i * 0.1}s`,
+                  borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                  paddingRight: i % 2 === 0 ? '12px' : '0',
+                }}
               >
-                {i !== 0 && <div className="w-px self-stretch bg-white/10 mr-2 shrink-0" />}
-                <div className="border-2 border-white/40 rounded-full p-3 shrink-0 bg-white">
+                <div className="border-2 border-white/40 rounded-full p-2.5 shrink-0 bg-white">
                   {f.icon}
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm mb-1">{f.title}</p>
+                  <p className="text-white font-bold text-sm mb-0.5">{f.title}</p>
                   <p className="text-blue-100 text-xs leading-snug">{f.desc}</p>
                 </div>
               </div>
