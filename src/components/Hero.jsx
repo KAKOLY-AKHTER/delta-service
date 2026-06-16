@@ -19,8 +19,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Mobile overlay so text is readable */}
-      <div className="absolute inset-0 lg:hidden" style={{ background: 'rgba(241,247,254,0.82)' }} />
+      {/* Mobile overlay — gradient so image shows on right, text readable on left */}
+      <div className="absolute inset-0 lg:hidden" style={{
+        background: 'linear-gradient(to right, rgba(241,247,254,0.92) 0%, rgba(241,247,254,0.80) 45%, rgba(241,247,254,0.35) 75%, rgba(241,247,254,0.10) 100%)',
+      }} />
 
       <div
         className="relative z-10 flex flex-col justify-center px-5 md:px-10 lg:px-[52px] py-24 lg:py-0"
