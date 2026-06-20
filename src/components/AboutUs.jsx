@@ -1,4 +1,10 @@
+import { Link } from 'react-router-dom'
 import useInView from '../hooks/useInView'
+import deltaCar from '../assets/delta-car.png'
+import deltaCar1 from '../assets/delta-car1.png'
+import img1 from '../assets/img1.png'
+import img2 from '../assets/img2.png'
+import patient from '../assets/patient.png'
 
 const highlights = [
   { title: 'Trained Professionals', desc: 'Background-checked, certified drivers with compassionate care training.' },
@@ -10,139 +16,105 @@ export default function AboutUs() {
   const [ref, inView] = useInView()
   return (
     <section
-      className="overflow-hidden py-10 lg:py-16 px-5 md:px-10 lg:px-13"
+      id="about"
+      className="overflow-hidden py-8 lg:py-12 px-5 md:px-10 lg:px-13"
       style={{ background: '#fff' }}
       ref={ref}
     >
-      <div className="flex flex-col lg:flex-row gap-10 lg:gap-14 lg:items-center">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 lg:items-stretch">
 
-        {/* ══════ LEFT: Image Collage ══════ */}
+        {/* ══════ LEFT: 4-image collage ══════ */}
         <div
-          className={`w-full lg:w-[46%] lg:shrink-0 relative h-65 lg:h-130 anim-fade-left ${inView ? 'anim-in' : ''}`}
+          className={`w-full lg:w-[48%] lg:shrink-0 relative h-105 lg:h-auto anim-fade-left ${inView ? 'anim-in' : ''}`}
         >
-          {/* ── MOBILE: single image ── */}
-          <div className="lg:hidden absolute inset-0 overflow-hidden rounded-3xl">
-            <img
-              src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=1600&q=95"
-              alt="Professional care team"
-              className="w-full h-full"
-              style={{ objectFit: 'cover', objectPosition: 'center top' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.65) 0%, transparent 55%)' }} />
-            <div className="absolute bottom-4 left-5">
-              <p className="text-white font-black" style={{ fontSize: '16px' }}>Safe & Reliable</p>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px' }}>Non-Medical Transportation</p>
+          {/* Decorative blob behind */}
+          <div className="absolute rounded-[40px] hidden lg:block" style={{
+            width: '85%', height: '85%',
+            background: 'linear-gradient(135deg, #f97316, #fb923c)',
+            bottom: '-14px', left: '-14px', zIndex: 0, opacity: 0.10,
+            transform: 'rotate(-3deg)',
+          }} />
+
+          {/* Magazine-style asymmetric grid */}
+          <div
+            className="relative z-10 h-full"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gridTemplateRows: '57% 43%',
+              gap: '8px',
+              minHeight: '400px',
+            }}
+          >
+            {/* Top-left WIDE: delta-car1 — spans 2 cols */}
+            <div className="relative overflow-hidden" style={{ gridColumn: '1 / 3', gridRow: '1', borderRadius: '20px', boxShadow: '0 20px 50px rgba(10,37,88,0.18)' }}>
+              <img src={deltaCar1} alt="Delta transport van" className="w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: 'center', transform: 'translateZ(0)', imageRendering: 'auto' }} />
+              {/* 5+ badge */}
+              <div className="absolute top-4 right-4 flex flex-col items-center justify-center rounded-full"
+                style={{ width: '68px', height: '68px', background: 'linear-gradient(135deg, #f97316, #ea580c)', boxShadow: '0 6px 20px rgba(249,115,22,0.5)', border: '3px solid white' }}>
+                <p className="text-white font-black leading-none" style={{ fontSize: '20px' }}>5+</p>
+                <p className="text-white font-bold text-center leading-tight" style={{ fontSize: '7px', letterSpacing: '0.04em' }}>YEARS</p>
+              </div>
             </div>
+
+            {/* Top-right NARROW: patient — col 3 */}
+            <div className="relative overflow-hidden" style={{ gridColumn: '3', gridRow: '1', borderRadius: '20px', boxShadow: '0 20px 50px rgba(10,37,88,0.18)' }}>
+              <img src={patient} alt="Patient transport" className="w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'translateZ(0)' }} />
+            </div>
+
+            {/* Bottom-left NARROW: img2 — col 1 */}
+            <div className="relative overflow-hidden" style={{ gridColumn: '1', gridRow: '2', borderRadius: '20px', boxShadow: '0 20px 50px rgba(10,37,88,0.18)' }}>
+              <img src={img2} alt="Driver assisting passenger" className="w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: 'center', transform: 'translateZ(0)' }} />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.75) 0%, transparent 50%)' }} />
+              <div className="absolute bottom-3 left-3 right-3">
+                <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-1" style={{ background: '#f97316' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
+                  <span className="text-white font-bold" style={{ fontSize: '10px' }}>DELTA FLEET</span>
+                </div>
+                <p className="text-white font-black leading-tight" style={{ fontSize: '13px' }}>Safe & Reliable</p>
+                <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: '10px' }}>Non-Medical Transportation</p>
+              </div>
+            </div>
+
+            {/* Bottom-right WIDE: delta-car — spans 2 cols */}
+            <div className="relative overflow-hidden" style={{ gridColumn: '2 / 4', gridRow: '2', borderRadius: '20px', boxShadow: '0 12px 32px rgba(10,37,88,0.12)' }}>
+              <img src={deltaCar} alt="Delta branded vehicle" className="w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: '85% center', transform: 'translateZ(0)', imageRendering: 'auto' }} />
+            </div>
+
+            {/* Bottom-right: img1 */}
+            {/* <div className="relative overflow-hidden" style={{ gridColumn: '3', gridRow: '2', borderRadius: '20px', boxShadow: '0 12px 32px rgba(10,37,88,0.12)' }}>
+              <img src={img1} alt="Transport care service" className="w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'translateZ(0)', imageRendering: 'auto' }} />
+            </div> */}
+
           </div>
 
-          {/* ── DESKTOP: collage ── */}
-          <div className="hidden lg:block absolute inset-0">
-
-            {/* BG blob */}
-            <div className="absolute rounded-[40px]" style={{
-              width: '78%', height: '78%',
-              background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
-              bottom: '-16px', left: '-16px', zIndex: 0, opacity: 0.10,
-              transform: 'rotate(-4deg)',
-            }} />
-
-            {/* Dot grid */}
-            <svg className="absolute" style={{ top: '-8px', left: '-8px', zIndex: 0, opacity: 0.2 }} width="100" height="100" viewBox="0 0 100 100">
-              {Array.from({ length: 5 }).map((_, r) =>
-                Array.from({ length: 5 }).map((_, c) => (
-                  <circle key={`${r}${c}`} cx={c * 20 + 8} cy={r * 20 + 8} r="3" fill="#f97316" />
-                ))
-              )}
-            </svg>
-
-            {/* Main tall image */}
-            <div className="absolute overflow-hidden" style={{
-              width: '68%', height: '100%',
-              right: 0, top: 0, zIndex: 2,
-              borderRadius: '24px',
-              boxShadow: '0 24px 60px rgba(10,37,88,0.18)',
-            }}>
-              <img
-                src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=1600&q=95"
-                alt="Professional care team"
-                className="w-full h-full"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              />
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.75) 0%, rgba(10,37,88,0.1) 45%, transparent 65%)' }} />
-              <div className="absolute" style={{ bottom: '20px', left: '18px', right: '18px' }}>
-                <p className="text-white font-black mb-0.5" style={{ fontSize: '16px' }}>Safe & Reliable</p>
-                <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '12px' }}>Non-Medical Transportation</p>
+          {/* Floating rating card */}
+          <div className="absolute hidden lg:flex items-center gap-3 z-20" style={{
+            right: '-16px', bottom: '24px',
+            background: 'white', borderRadius: '16px',
+            padding: '10px 16px',
+            boxShadow: '0 12px 36px rgba(10,37,88,0.14)',
+            minWidth: '175px',
+          }}>
+            <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fff4ec' }}>
+              <svg viewBox="0 0 24 24" fill="#f97316" className="w-4 h-4">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+            <div>
+              <div className="flex items-center gap-0.5 mb-0.5">
+                {[1,2,3,4,5].map(i => (
+                  <svg key={i} viewBox="0 0 24 24" fill="#f97316" className="w-3 h-3">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                ))}
               </div>
-            </div>
-
-            {/* Top-left small image */}
-            <div className="absolute overflow-hidden" style={{
-              width: '37%', height: '45%',
-              left: 0, top: 0, zIndex: 3,
-              borderRadius: '20px',
-              boxShadow: '0 16px 40px rgba(10,37,88,0.16)',
-              border: '4px solid white',
-            }}>
-              <img
-                src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1000&q=95"
-                alt="Medical professional"
-                className="w-full h-full"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              />
-            </div>
-
-            {/* Bottom-left small image */}
-            <div className="absolute overflow-hidden" style={{
-              width: '37%', height: '40%',
-              left: 0, bottom: '8px', zIndex: 3,
-              borderRadius: '20px',
-              boxShadow: '0 16px 40px rgba(10,37,88,0.16)',
-              border: '4px solid white',
-            }}>
-              <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1000&q=95"
-                alt="Caregiver"
-                className="w-full h-full"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              />
-            </div>
-
-            {/* Years badge */}
-            <div className="absolute flex flex-col items-center justify-center z-10" style={{
-              width: '76px', height: '76px', borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f97316, #ea580c)',
-              left: 'calc(37% - 38px + 4px)',
-              top: '46%', transform: 'translateY(-50%)',
-              border: '4px solid white',
-              boxShadow: '0 8px 24px rgba(249,115,22,0.45)',
-            }}>
-              <p className="text-white font-black leading-none" style={{ fontSize: '22px' }}>5+</p>
-              <p className="text-white font-bold text-center leading-tight" style={{ fontSize: '7.5px', letterSpacing: '0.04em' }}>YEARS<br />SERVICE</p>
-            </div>
-
-            {/* Floating rating card */}
-            <div className="absolute flex items-center gap-3 z-10" style={{
-              right: '-16px', bottom: '24px',
-              background: 'white', borderRadius: '16px',
-              padding: '11px 16px',
-              boxShadow: '0 12px 36px rgba(10,37,88,0.14)',
-              minWidth: '180px',
-            }}>
-              <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fff4ec' }}>
-                <svg viewBox="0 0 24 24" fill="#f97316" className="w-4 h-4">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              </div>
-              <div>
-                <div className="flex items-center gap-0.5 mb-0.5">
-                  {[1,2,3,4,5].map(i => (
-                    <svg key={i} viewBox="0 0 24 24" fill="#f97316" className="w-3 h-3">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-500" style={{ fontSize: '11px' }}>500+ Happy Clients</p>
-              </div>
+              <p className="text-gray-500" style={{ fontSize: '11px' }}>500+ Happy Clients</p>
             </div>
           </div>
         </div>
@@ -203,18 +175,18 @@ export default function AboutUs() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <button className="bg-[#0a2558] text-white font-bold rounded-xl hover:bg-[#0d3070] transition-colors tracking-widest"
-              style={{ padding: '12px 24px', fontSize: '12px' }}>
+            <Link to="/contact" className="bg-[#0a2558] text-white font-bold rounded-xl hover:bg-[#0d3070] transition-colors tracking-widest"
+              style={{ padding: '12px 24px', fontSize: '12px', textDecoration: 'none' }}>
               BOOK A RIDE
-            </button>
-            <a href="#" className="flex items-center gap-2 text-[#0a2558] font-bold text-sm hover:text-orange-500 transition-colors">
+            </Link>
+            <Link to="/about" className="flex items-center gap-2 text-[#0a2558] font-bold text-sm hover:text-orange-500 transition-colors" style={{ textDecoration: 'none' }}>
               <span className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: '#f1f7fe' }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2.5" className="w-4 h-4">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </span>
               Learn More
-            </a>
+            </Link>
           </div>
         </div>
 

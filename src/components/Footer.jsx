@@ -1,7 +1,16 @@
+import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
+import deltaCar1 from '../assets/delta-car1.png'
 import useInView from '../hooks/useInView'
 
-const quickLinks = ['Home', 'About Us', 'Services', 'How It Works', 'Our Fleet', 'Contact Us']
+const quickLinks = [
+  { label: 'Home',         to: '/'             },
+  { label: 'About Us',     to: '/about'        },
+  { label: 'Services',     to: '/services'     },
+  { label: 'How It Works', to: '/how-it-works' },
+  { label: 'Our Fleet',    to: '/fleet'        },
+  { label: 'Contact Us',   to: '/contact'      },
+]
 const services = [
   'Medical Appointments',
   'Dialysis Treatments',
@@ -18,7 +27,7 @@ const contactItems = [
         <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
       </svg>
     ),
-    label: 'Phone', value: '(123) 456-7890',
+    label: 'Phone', value: '(470) 336-7475',
   },
   {
     icon: (
@@ -71,34 +80,155 @@ export default function Footer() {
 
       {/* ── TOP CTA BAND ── */}
       <div className={`relative overflow-hidden anim-fade-up ${inView ? 'anim-in' : ''}`}
-        style={{ background: 'linear-gradient(135deg, #0d3070 0%, #0a2558 100%)', padding: '40px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="absolute rounded-full" style={{ width: '320px', height: '320px', background: 'rgba(249,115,22,0.06)', right: '-60px', top: '-80px', border: '1px solid rgba(249,115,22,0.1)' }} />
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', minHeight: '340px' }}>
 
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 max-w-7xl mx-auto px-2 md:px-8">
-          <div>
-            <p className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-2">Ready to Travel?</p>
-            <h3 className="font-black text-white leading-tight" style={{ fontSize: 'clamp(22px, 3vw, 32px)' }}>
-              Book Your Ride Today —<br />
-              <span style={{ color: '#f97316' }}>Safe, Fast & Reliable.</span>
-            </h3>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
-            <div className="flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(249,115,22,0.2)' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" className="w-5 h-5">
-                  <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
-                </svg>
+        {/* Dot pattern background */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'linear-gradient(135deg, #0d3070 0%, #0a2558 60%, #071a3e 100%)',
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0)',
+          backgroundSize: '28px 28px',
+        }} />
+
+        <div className="relative z-10 flex flex-col lg:flex-row min-h-[340px]">
+
+          {/* ══ LEFT: Text content ══ */}
+          <div className="flex-1 flex items-center px-8 md:px-12 lg:px-16 py-14 relative">
+            {/* Left orange accent line */}
+            <div className="absolute top-0 left-0 bottom-0 pointer-events-none" style={{ width: '4px', background: 'linear-gradient(to bottom, transparent, #f97316, transparent)' }} />
+            {/* Top accent line */}
+            <div className="absolute top-0 left-0 pointer-events-none" style={{ width: '55%', height: '3px', background: 'linear-gradient(to right, #f97316, transparent)' }} />
+
+            <div className="max-w-lg">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5"
+                style={{ background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)' }}>
+                <span className="w-2 h-2 rounded-full bg-orange-400 inline-block animate-pulse" />
+                <span className="text-orange-400 font-bold text-xs tracking-widest uppercase">Ready to Travel?</span>
               </div>
-              <div>
-                <p className="text-blue-200 text-xs mb-0.5">Call us anytime</p>
-                <p className="text-white font-black" style={{ fontSize: '17px' }}>(123) 456-7890</p>
+
+              {/* Heading */}
+              <h3 className="font-black text-white leading-tight mb-4" style={{ fontSize: 'clamp(26px, 3.2vw, 40px)' }}>
+                Book Your Ride Today —<br />
+                <span style={{ color: '#f97316' }}>Safe, Fast &amp; Reliable.</span>
+              </h3>
+
+              <p className="text-blue-200 mb-7 leading-relaxed" style={{ fontSize: '14px', maxWidth: '380px' }}>
+                Professional non-emergency transportation for patients, seniors, and families. Available 24/7, every day of the year.
+              </p>
+
+              {/* Feature checklist */}
+              <div className="flex flex-col gap-3 mb-8">
+                {[
+                  'Licensed & fully insured drivers',
+                  'On-time guarantee, every single ride',
+                  'Door-to-door compassionate service',
+                ].map((f) => (
+                  <div key={f} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                      style={{ background: '#f97316', boxShadow: '0 3px 10px rgba(249,115,22,0.4)' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" width="11" height="11">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                    </div>
+                    <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: '13.5px', fontWeight: 600 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA row */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <Link to="/contact"
+                  style={{
+                    background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                    color: 'white', fontWeight: 800, fontSize: '13px',
+                    letterSpacing: '0.08em', padding: '14px 26px',
+                    borderRadius: '12px', textDecoration: 'none',
+                    boxShadow: '0 8px 28px rgba(249,115,22,0.45)',
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    whiteSpace: 'nowrap',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(249,115,22,0.6)' }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 8px 28px rgba(249,115,22,0.45)' }}
+                >
+                  BOOK A RIDE
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="15" height="15">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </Link>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(249,115,22,0.18)', border: '1px solid rgba(249,115,22,0.35)' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" width="18" height="18">
+                      <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Call us 24/7</p>
+                    <p style={{ color: 'white', fontWeight: 800, fontSize: '16px', lineHeight: 1.2 }}>(470) 336-7475</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <button className="font-black text-white rounded-2xl tracking-widest whitespace-nowrap"
-              style={{ padding: '16px 28px', fontSize: '13px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', boxShadow: '0 8px 28px rgba(249,115,22,0.4)' }}>
-              BOOK A RIDE →
-            </button>
           </div>
+
+          {/* ══ RIGHT: Image + floating stat cards ══ */}
+          <div className="hidden lg:block lg:w-[42%] relative overflow-hidden">
+            <img
+              src={deltaCar1}
+              alt="Delta Care Transport vehicle"
+              className="w-full h-full"
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+            />
+            {/* Left-to-right gradient overlay to blend with left panel */}
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #0a2558 0%, rgba(10,37,88,0.55) 35%, rgba(10,37,88,0.1) 100%)' }} />
+            {/* Dark bottom overlay */}
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,26,62,0.7) 0%, transparent 60%)' }} />
+
+            {/* Floating stat cards */}
+            <div className="absolute bottom-10 right-8 flex flex-col gap-3">
+              <div style={{
+                background: 'rgba(255,255,255,0.12)',
+                backdropFilter: 'blur(14px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '18px', padding: '18px 24px',
+              }}>
+                <p style={{ color: '#f97316', fontWeight: 900, fontSize: '30px', lineHeight: 1 }}>10K+</p>
+                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px', fontWeight: 600, marginTop: '4px' }}>Trips Completed</p>
+              </div>
+              <div style={{
+                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                borderRadius: '18px', padding: '18px 24px',
+                boxShadow: '0 8px 28px rgba(249,115,22,0.5)',
+              }}>
+                <p style={{ color: 'white', fontWeight: 900, fontSize: '30px', lineHeight: 1 }}>4.9★</p>
+                <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '12px', fontWeight: 600, marginTop: '4px' }}>Average Rating</p>
+              </div>
+            </div>
+
+            {/* Top-left "5+ Years" badge */}
+            <div className="absolute top-8 left-8">
+              <div style={{
+                background: 'rgba(10,37,88,0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: '14px', padding: '12px 18px',
+                display: 'flex', alignItems: 'center', gap: '10px',
+              }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#f97316', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg viewBox="0 0 24 24" fill="white" width="18" height="18">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <div>
+                  <p style={{ color: 'white', fontWeight: 800, fontSize: '13px', lineHeight: 1 }}>5+ Years</p>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '11px' }}>Trusted Service</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -153,14 +283,14 @@ export default function Footer() {
               <h4 className="text-white font-black text-sm uppercase tracking-widest">Quick Links</h4>
             </div>
             <ul className="flex flex-col gap-3">
-              {quickLinks.map((l) => (
-                <li key={l}>
-                  <a href="#" className="group flex items-center gap-3" style={{ color: '#93c5fd' }}>
+              {quickLinks.map(({ label, to }) => (
+                <li key={to}>
+                  <Link to={to} className="group flex items-center gap-3" style={{ color: '#93c5fd', textDecoration: 'none' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" className="w-3 h-3 shrink-0">
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
-                    <span className="text-sm hover:text-white transition-colors">{l}</span>
-                  </a>
+                    <span className="text-sm hover:text-white transition-colors">{label}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -175,12 +305,12 @@ export default function Footer() {
             <ul className="flex flex-col gap-3">
               {services.map((s) => (
                 <li key={s}>
-                  <a href="#" className="group flex items-center gap-3" style={{ color: '#93c5fd' }}>
+                  <Link to="/services" className="group flex items-center gap-3" style={{ color: '#93c5fd', textDecoration: 'none' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5" className="w-3 h-3 shrink-0">
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                     <span className="text-sm hover:text-white transition-colors">{s}</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -215,7 +345,7 @@ export default function Footer() {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 md:px-10 lg:px-[52px] py-5"
         style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
         <p className="text-blue-200 text-sm text-center sm:text-left">
-          © 2024 <span className="text-white font-semibold">Delta Care Transport</span>. All rights reserved.
+          © {new Date().getFullYear()} <span className="text-white font-semibold">Delta Care Transport</span>. All rights reserved.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           {['Privacy Policy', 'Terms of Service', 'Non-Medical Transportation'].map((item) => (

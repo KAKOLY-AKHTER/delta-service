@@ -1,4 +1,7 @@
+import { Link } from 'react-router-dom'
 import useInView from '../hooks/useInView'
+import CountUp from './CountUp'
+import deltaService from '../assets/delta-service.png'
 
 const reasons = [
   {
@@ -64,23 +67,23 @@ const reasons = [
 
 const stats = [
   { num: '500+', label: 'Happy Clients' },
-  { num: '10K+', label: 'Trips Completed' },
-  { num: '4.9★', label: 'Average Rating' },
-  { num: '24/7', label: 'Availability' },
+  { num: '10K+', label: 'Trips Done' },
+  { num: '4.9★', label: 'Avg Rating' },
+  { num: '24/7', label: 'Available' },
 ]
 
 export default function WhyChooseUs() {
   const [ref, inView] = useInView()
   return (
     <section
-      className="overflow-hidden py-16 lg:py-25 px-5 md:px-10 lg:px-13"
+      className="overflow-hidden py-14 lg:py-20 px-5 md:px-10 lg:px-13"
       style={{ background: '#f8faff' }}
       ref={ref}
     >
 
       {/* ── Header ── */}
-      <div className={`text-center mb-12 lg:mb-16 anim-fade-up ${inView ? 'anim-in' : ''}`}>
-        <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5"
+      <div className={`text-center mb-10 lg:mb-14 anim-fade-up ${inView ? 'anim-in' : ''}`}>
+        <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-4"
           style={{ background: '#fff4ec', border: '1px solid #fed7aa' }}>
           <span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
           <span className="text-orange-500 font-bold text-xs tracking-widest uppercase">Our Advantages</span>
@@ -89,61 +92,68 @@ export default function WhyChooseUs() {
           Why Clients Choose<br />
           <span style={{ color: '#f97316' }}>Delta Care Transport</span>
         </h2>
-        <p className="text-gray-600 mt-4 mx-auto leading-relaxed" style={{ fontSize: '15px', maxWidth: '480px' }}>
+        <p className="text-gray-600 mt-3 mx-auto leading-relaxed" style={{ fontSize: '15px', maxWidth: '460px' }}>
           We go beyond just getting you there — we make every journey safe,
           comfortable, and stress-free from start to finish.
         </p>
       </div>
 
       {/* ── Main layout ── */}
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 lg:items-stretch">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
 
-        {/* ══ LEFT: Image panel ══ */}
+        {/* ══ LEFT: Reason cards ══ */}
+
+        {/* ══ RIGHT: delta-service image + stats ══ */}
         <div
-          className={`w-full lg:w-[38%] lg:shrink-0 relative overflow-hidden rounded-3xl min-h-90 anim-fade-left ${inView ? 'anim-in' : ''}`}
+          className={`w-full lg:w-[46%] lg:shrink-0 lg:order-2 anim-fade-right ${inView ? 'anim-in' : ''}`}
           style={{ transitionDelay: '0.1s' }}
         >
-          <img
-            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1600&q=95"
-            alt="Professional caregiver"
-            className="absolute inset-0 w-full h-full"
-            style={{ objectFit: 'cover', objectPosition: 'center top' }}
-          />
+          {/* Image card — no dark overlay, show branding clearly */}
+          <div className="relative" style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 24px 60px rgba(10,37,88,0.22)', border: '4px solid white' }}>
+            {/* Orange accent corner */}
+            <div className="absolute z-10" style={{
+              top: 0, left: 0, width: '100%', height: '6px',
+              background: 'linear-gradient(to right, #f97316, #ea580c)',
+            }} />
 
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to top, rgba(10,37,88,0.97) 0%, rgba(10,37,88,0.55) 45%, rgba(10,37,88,0.1) 80%)',
-          }} />
+            <img
+              src={deltaService}
+              alt="Delta Care Transport Services"
+              className="w-full block"
+              style={{
+                objectFit: 'cover',
+                display: 'block',
+                imageRendering: 'auto',
+                transform: 'translateZ(0)',
+              }}
+            />
 
-          {/* Trust badge */}
-          <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5"
-            style={{ background: '#f97316', boxShadow: '0 6px 20px rgba(249,115,22,0.45)' }}>
-            <svg viewBox="0 0 24 24" fill="white" className="w-3.5 h-3.5">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-            <span className="text-white font-bold text-xs">#1 Trusted Transport</span>
+            {/* Trust badge */}
+            <div className="absolute z-10" style={{ top: '18px', right: '18px' }}>
+              <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5"
+                style={{ background: 'rgba(10,37,88,0.88)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}>
+                <svg viewBox="0 0 24 24" fill="#f97316" className="w-3.5 h-3.5">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span className="text-white font-bold" style={{ fontSize: '11px' }}>#1 Trusted Transport</span>
+              </div>
+            </div>
           </div>
 
-          {/* Stats grid at bottom */}
-          <div className="absolute bottom-0 left-0 right-0" style={{ padding: '0 20px 24px' }}>
-            <p className="text-orange-400 font-bold text-xs tracking-widest uppercase mb-3">Our Numbers</p>
-            <div className="grid grid-cols-2 gap-2.5">
-              {stats.map((s) => (
-                <div key={s.label} className="rounded-2xl p-3" style={{
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.14)',
-                  backdropFilter: 'blur(10px)',
-                }}>
-                  <p className="font-black text-white leading-none mb-1" style={{ fontSize: '22px' }}>{s.num}</p>
-                  <p className="text-blue-200 font-medium" style={{ fontSize: '11px' }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
+          {/* Stats row — below image, clean navy cards */}
+          <div className="grid grid-cols-4 gap-2.5 mt-3">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-2xl text-center"
+                style={{ background: '#0a2558', padding: '14px 8px', boxShadow: '0 8px 24px rgba(10,37,88,0.18)' }}>
+                <p className="font-black leading-none mb-1" style={{ color: '#f97316', fontSize: '18px' }}><CountUp value={s.num} inView={inView} /></p>
+                <p className="font-medium leading-tight" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '10px' }}>{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ══ RIGHT: Reason cards ══ */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 content-start">
+        {/* ══ LEFT: Reason cards ══ */}
+        <div className="flex-1 lg:order-1 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {reasons.map((r, i) => (
             <div
               key={r.title}
@@ -151,24 +161,25 @@ export default function WhyChooseUs() {
               style={{
                 background: '#fff',
                 border: '1px solid #e8eef8',
+                boxShadow: '0 4px 16px rgba(10,37,88,0.06)',
                 transitionDelay: `${0.15 + i * 0.07}s`,
               }}
             >
               {/* Icon */}
               <div className="shrink-0 rounded-xl flex items-center justify-center"
-                style={{ width: '48px', height: '48px', background: '#fff4ec', border: '1px solid #fed7aa', alignSelf: 'flex-start' }}>
+                style={{ width: '46px', height: '46px', background: '#fff4ec', border: '1px solid #fed7aa', alignSelf: 'flex-start' }}>
                 {r.icon}
               </div>
 
               {/* Text */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1.5">
-                  <h3 className="font-black text-[#0a2558]" style={{ fontSize: '14px' }}>{r.title}</h3>
-                  <span className="font-black shrink-0 ml-2" style={{ color: 'rgba(10,37,88,0.10)', fontSize: '20px' }}>
+                  <h3 className="font-black text-[#0a2558]" style={{ fontSize: '13.5px' }}>{r.title}</h3>
+                  <span className="font-black shrink-0 ml-2" style={{ color: 'rgba(10,37,88,0.10)', fontSize: '18px' }}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
-                <p className="text-gray-600 leading-relaxed" style={{ fontSize: '13px' }}>{r.desc}</p>
+                <p className="text-gray-500 leading-relaxed" style={{ fontSize: '12.5px' }}>{r.desc}</p>
                 <div className="mt-3 h-px" style={{ background: 'linear-gradient(to right, #f97316 0%, rgba(249,115,22,0.12) 60%, transparent 100%)' }} />
               </div>
             </div>
@@ -178,25 +189,22 @@ export default function WhyChooseUs() {
 
       {/* ── Bottom CTA strip ── */}
       <div
-        className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mt-10 rounded-2xl px-6 py-5 anim-fade-up ${inView ? 'anim-in' : ''}`}
-        style={{
-          background: '#0a2558',
-          transitionDelay: '0.65s',
-        }}
+        className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mt-8 rounded-2xl px-6 py-5 anim-fade-up ${inView ? 'anim-in' : ''}`}
+        style={{ background: '#0a2558', transitionDelay: '0.65s' }}
       >
         <div>
           <p className="text-white font-bold" style={{ fontSize: '16px' }}>Ready to experience the difference?</p>
           <p className="text-blue-200 text-sm mt-0.5">Safe, reliable, and on-time — every single ride. Available 24/7.</p>
         </div>
         <div className="flex gap-3 shrink-0">
-          <button className="bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors tracking-widest"
-            style={{ padding: '12px 22px', fontSize: '13px' }}>
+          <Link to="/contact" className="bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors tracking-widest"
+            style={{ padding: '12px 22px', fontSize: '13px', textDecoration: 'none' }}>
             BOOK A RIDE
-          </button>
-          <button className="font-bold rounded-xl tracking-widest transition-colors"
-            style={{ padding: '12px 22px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', color: 'white' }}>
+          </Link>
+          <a href="tel:+14703367475" className="font-bold rounded-xl tracking-widest transition-colors"
+            style={{ padding: '12px 22px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', color: 'white', textDecoration: 'none' }}>
             CALL NOW
-          </button>
+          </a>
         </div>
       </div>
 
