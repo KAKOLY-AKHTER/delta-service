@@ -205,10 +205,114 @@ function PrimaryBtn({ onClick, disabled, loading, children, small }) {
 }
 
 /* ══════════════════════════════════
+   PIN LOCKSCREEN
+══════════════════════════════════ */
+function PinGate({ onPass }) {
+  const [pin, setPin]     = useState('')
+  const [error, setError] = useState(false)
+  const [shake, setShake] = useState(false)
+
+  const check = () => {
+    if (pin === import.meta.env.VITE_ADMIN_PIN) {
+      onPass()
+    } else {
+      setError(true)
+      setShake(true)
+      setPin('')
+      setTimeout(() => { setError(false); setShake(false) }, 1800)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4"
+      style={{ background:'linear-gradient(135deg,#0b1a3d 0%,#0a2558 60%,#0c2a6b 100%)' }}>
+      <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px)', backgroundSize:'28px 28px', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', right:0, top:0, width:'50%', height:'100%', background:'radial-gradient(ellipse at top right, rgba(249,115,22,0.08), transparent 60%)', pointerEvents:'none' }} />
+
+      <div className="relative w-full max-w-sm">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-white text-2xl mx-auto mb-4"
+            style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', boxShadow:'0 8px 32px rgba(249,115,22,0.4)' }}>Δ</div>
+          <p className="text-white font-black" style={{ fontSize:'22px', letterSpacing:'-0.02em' }}>Delta Care Admin</p>
+          <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'13px', marginTop:'4px' }}>Enter password to continue</p>
+        </div>
+
+        {/* Card */}
+        <div className={`rounded-2xl p-8 ${shake ? 'animate-[dashScaleIn_0.1s_ease_both]' : ''}`}
+          style={{
+            background:'rgba(255,255,255,0.06)',
+            border: error ? '1.5px solid rgba(239,68,68,0.5)' : '1.5px solid rgba(255,255,255,0.1)',
+            backdropFilter:'blur(20px)',
+            WebkitBackdropFilter:'blur(20px)',
+            transition:'border-color 0.2s',
+            animation: shake ? 'pinShake 0.4s ease' : 'none',
+          }}>
+          <div className="mb-5">
+            <label style={{ color:'rgba(255,255,255,0.5)', fontSize:'11.5px', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', display:'block', marginBottom:'10px' }}>
+              Admin Password
+            </label>
+            <input
+              type="password"
+              value={pin}
+              onChange={e => setPin(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && check()}
+              placeholder="••••••••"
+              autoFocus
+              style={{
+                width:'100%', padding:'14px 16px', borderRadius:'12px', fontSize:'16px',
+                background:'rgba(255,255,255,0.08)', border: error ? '1.5px solid rgba(239,68,68,0.6)' : '1.5px solid rgba(255,255,255,0.15)',
+                color:'white', outline:'none', boxSizing:'border-box', fontFamily:'inherit',
+                letterSpacing:'0.1em', transition:'border-color 0.2s',
+              }}
+              onFocus={e => { if (!error) e.target.style.borderColor = 'rgba(249,115,22,0.6)' }}
+              onBlur={e => { if (!error) e.target.style.borderColor = 'rgba(255,255,255,0.15)' }}
+            />
+            {error && (
+              <p style={{ color:'#fca5a5', fontSize:'12.5px', marginTop:'8px', fontWeight:600 }}>
+                ✗ Incorrect password. Please try again.
+              </p>
+            )}
+          </div>
+
+          <button onClick={check}
+            style={{
+              width:'100%', padding:'14px', borderRadius:'12px', background:'linear-gradient(135deg,#f97316,#ea580c)',
+              border:'none', color:'white', fontWeight:800, fontSize:'14.5px', cursor:'pointer',
+              boxShadow:'0 6px 20px rgba(249,115,22,0.4)', transition:'opacity 0.15s', letterSpacing:'0.02em',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+            Enter Admin Panel →
+          </button>
+        </div>
+
+        <p className="text-center mt-6" style={{ color:'rgba(255,255,255,0.18)', fontSize:'11.5px' }}>
+          Authorized personnel only
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes pinShake {
+          0%,100% { transform: translateX(0) }
+          15%      { transform: translateX(-8px) }
+          30%      { transform: translateX(8px) }
+          45%      { transform: translateX(-6px) }
+          60%      { transform: translateX(6px) }
+          75%      { transform: translateX(-3px) }
+          90%      { transform: translateX(3px) }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+/* ══════════════════════════════════
    MAIN ADMIN PAGE
 ══════════════════════════════════ */
 export default function AdminPage() {
   const navigate = useNavigate()
+  const [pinPassed, setPinPassed]     = useState(false)
   const [user, setUser]               = useState(null)
   const [isAdmin, setIsAdmin]         = useState(null)
   const [active, setActive]           = useState('overview')
@@ -220,10 +324,12 @@ export default function AdminPage() {
   const [dataLoading, setDataLoading] = useState(true)
 
   useEffect(() => {
+    if (!pinPassed) return
     const unsub = onAuthStateChanged(auth, async u => {
       if (!u) { navigate('/login'); return }
       const profile = await getProfile(u.uid)
-      if (profile.role !== 'admin') { setIsAdmin(false); return }
+      const allowedEmail = import.meta.env.VITE_ADMIN_EMAIL
+      if (profile.role !== 'admin' || u.email !== allowedEmail) { setIsAdmin(false); return }
       setUser(u); setIsAdmin(true)
       try {
         const [b, us, t, cr] = await Promise.all([getAllBookings(), getAllUsers(), getAllTickets(), getAllContactRequests()])
@@ -232,7 +338,9 @@ export default function AdminPage() {
       finally { setDataLoading(false) }
     })
     return unsub
-  }, [])
+  }, [pinPassed])
+
+  if (!pinPassed) return <PinGate onPass={() => setPinPassed(true)} />
 
   /* Loading */
   if (isAdmin === null) return (
@@ -253,16 +361,9 @@ export default function AdminPage() {
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5"
           style={{ background:'linear-gradient(135deg,#fee2e2,#fecaca)', border:'1px solid #fca5a5' }}>🔒</div>
         <p className="font-black text-[#0a2558] mb-2" style={{ fontSize:'22px', letterSpacing:'-0.02em' }}>Admin Access Only</p>
-        <p className="text-gray-500 mb-4" style={{ fontSize:'13.5px', lineHeight:'1.7' }}>
-          This area is restricted to administrators.
+        <p className="text-gray-500 mb-6" style={{ fontSize:'13.5px', lineHeight:'1.7' }}>
+          You do not have permission to access this area.<br />Please contact the system administrator.
         </p>
-        <div className="rounded-xl p-4 mb-5 text-left" style={{ background:'#f8fafc', border:'1px solid #e2e8f0' }}>
-          <p className="font-bold text-[#0a2558] mb-2" style={{ fontSize:'12px' }}>How to enable admin access:</p>
-          <p style={{ fontSize:'12px', color:'#64748b', lineHeight:'1.8' }}>
-            Firebase Console → Firestore → <code style={{ background:'#f1f5f9', padding:'1px 6px', borderRadius:'4px', color:'#0a2558', fontWeight:700 }}>users</code> collection → your UID → add field:
-            <br /><code style={{ background:'#fef3c7', padding:'2px 8px', borderRadius:'4px', fontWeight:800, color:'#92400e', marginTop:'4px', display:'inline-block' }}>role = "admin"</code>
-          </p>
-        </div>
         <button onClick={() => navigate('/')}
           className="w-full font-bold text-white rounded-xl py-3"
           style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px', boxShadow:'0 4px 16px rgba(249,115,22,0.35)' }}>
