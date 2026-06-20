@@ -236,8 +236,10 @@ function PinGate({ onPass }) {
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-white text-2xl mx-auto mb-4"
-            style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', boxShadow:'0 8px 32px rgba(249,115,22,0.4)' }}>Δ</div>
+          <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden"
+            style={{ background:'white', boxShadow:'0 0 0 3px #f97316, 0 8px 32px rgba(249,115,22,0.4)' }}>
+            <img src={logo} alt="Delta Care" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+          </div>
           <p className="text-white font-black" style={{ fontSize:'22px', letterSpacing:'-0.02em' }}>Delta Care Admin</p>
           <p style={{ color:'rgba(255,255,255,0.35)', fontSize:'13px', marginTop:'4px' }}>Enter password to continue</p>
         </div>
