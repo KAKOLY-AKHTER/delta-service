@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/logo.png'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../firebase'
 import {
@@ -412,8 +413,10 @@ export default function AdminPage() {
 
         {/* Logo */}
         <div className="p-5 flex items-center gap-3" style={{ borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-lg shrink-0"
-            style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', boxShadow:'0 6px 16px rgba(249,115,22,0.45)' }}>Δ</div>
+          <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden"
+            style={{ background:'white', boxShadow:'0 0 0 2px #f97316, 0 4px 12px rgba(249,115,22,0.35)' }}>
+            <img src={logo} alt="Delta Care" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+          </div>
           <div>
             <p className="text-white font-black" style={{ fontSize:'14px', letterSpacing:'-0.01em' }}>Delta Care</p>
             <div className="flex items-center gap-1.5 mt-0.5">
@@ -456,9 +459,12 @@ export default function AdminPage() {
         {/* User card */}
         <div className="m-3 rounded-xl p-3" style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black text-white shrink-0"
+            <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
               style={{ background:'linear-gradient(135deg,#f97316,#dc2626)', boxShadow:'0 4px 12px rgba(249,115,22,0.4)' }}>
-              {(user?.displayName || user?.email || 'A')[0].toUpperCase()}
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="18" height="18">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-white font-bold truncate" style={{ fontSize:'12.5px' }}>{user?.displayName || 'Admin'}</p>
