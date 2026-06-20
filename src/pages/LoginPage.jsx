@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '../firebase'
 import logo from '../assets/logo.png'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/dashboard'
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [gLoading, setGLoading] = useState(false)
@@ -23,7 +25,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await signInWithEmailAndPassword(auth, form.email, form.password)
-      navigate('/')
+      navigate(redirectTo)
     } catch (err) {
       setError(friendlyError(err.code))
     } finally {
@@ -36,7 +38,7 @@ export default function LoginPage() {
     setGLoading(true)
     try {
       await signInWithPopup(auth, googleProvider)
-      navigate('/')
+      navigate(redirectTo)
     } catch (err) {
       if (err.code !== 'auth/popup-closed-by-user') setError(friendlyError(err.code))
     } finally {

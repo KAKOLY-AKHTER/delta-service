@@ -349,7 +349,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!pinPassed) return
     const unsub = onAuthStateChanged(auth, async u => {
-      if (!u) { navigate('/login'); return }
+      if (!u) { navigate('/login?redirect=/admin'); return }
       const profile = await getProfile(u.uid)
       const allowedEmail = import.meta.env.VITE_ADMIN_EMAIL
       const emailOk = !allowedEmail || u.email === allowedEmail
