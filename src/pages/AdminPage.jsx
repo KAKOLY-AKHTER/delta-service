@@ -208,12 +208,15 @@ function PrimaryBtn({ onClick, disabled, loading, children, small }) {
    PIN LOCKSCREEN
 ══════════════════════════════════ */
 function PinGate({ onPass }) {
-  const [pin, setPin]     = useState('')
-  const [error, setError] = useState(false)
-  const [shake, setShake] = useState(false)
+  const [pin, setPin]       = useState('')
+  const [show, setShow]     = useState(false)
+  const [error, setError]   = useState(false)
+  const [shake, setShake]   = useState(false)
+
+  const CORRECT = import.meta.env.VITE_ADMIN_PIN || 'Delta@2025'
 
   const check = () => {
-    if (pin === import.meta.env.VITE_ADMIN_PIN) {
+    if (pin === CORRECT) {
       onPass()
     } else {
       setError(true)
@@ -252,22 +255,42 @@ function PinGate({ onPass }) {
             <label style={{ color:'rgba(255,255,255,0.5)', fontSize:'11.5px', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', display:'block', marginBottom:'10px' }}>
               Admin Password
             </label>
-            <input
-              type="password"
-              value={pin}
-              onChange={e => setPin(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && check()}
-              placeholder="••••••••"
-              autoFocus
-              style={{
-                width:'100%', padding:'14px 16px', borderRadius:'12px', fontSize:'16px',
-                background:'rgba(255,255,255,0.08)', border: error ? '1.5px solid rgba(239,68,68,0.6)' : '1.5px solid rgba(255,255,255,0.15)',
-                color:'white', outline:'none', boxSizing:'border-box', fontFamily:'inherit',
-                letterSpacing:'0.1em', transition:'border-color 0.2s',
-              }}
-              onFocus={e => { if (!error) e.target.style.borderColor = 'rgba(249,115,22,0.6)' }}
-              onBlur={e => { if (!error) e.target.style.borderColor = 'rgba(255,255,255,0.15)' }}
-            />
+            <div style={{ position:'relative' }}>
+              <input
+                type={show ? 'text' : 'password'}
+                value={pin}
+                onChange={e => setPin(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && check()}
+                placeholder="••••••••"
+                autoFocus
+                style={{
+                  width:'100%', padding:'14px 48px 14px 16px', borderRadius:'12px', fontSize:'16px',
+                  background:'rgba(255,255,255,0.08)', border: error ? '1.5px solid rgba(239,68,68,0.6)' : '1.5px solid rgba(255,255,255,0.15)',
+                  color:'white', outline:'none', boxSizing:'border-box', fontFamily:'inherit',
+                  letterSpacing: show ? '0' : '0.1em', transition:'border-color 0.2s',
+                }}
+                onFocus={e => { if (!error) e.target.style.borderColor = 'rgba(249,115,22,0.6)' }}
+                onBlur={e => { if (!error) e.target.style.borderColor = 'rgba(255,255,255,0.15)' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShow(s => !s)}
+                style={{ position:'absolute', right:'14px', top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', padding:'4px', color:'rgba(255,255,255,0.4)', display:'flex', alignItems:'center' }}
+              >
+                {show ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
+              </button>
+            </div>
             {error && (
               <p style={{ color:'#fca5a5', fontSize:'12.5px', marginTop:'8px', fontWeight:600 }}>
                 ✗ Incorrect password. Please try again.
