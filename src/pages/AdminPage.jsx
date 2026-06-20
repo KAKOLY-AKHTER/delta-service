@@ -352,7 +352,8 @@ export default function AdminPage() {
       if (!u) { navigate('/login'); return }
       const profile = await getProfile(u.uid)
       const allowedEmail = import.meta.env.VITE_ADMIN_EMAIL
-      if (profile.role !== 'admin' || u.email !== allowedEmail) { setIsAdmin(false); return }
+      const emailOk = !allowedEmail || u.email === allowedEmail
+      if (profile.role !== 'admin' || !emailOk) { setIsAdmin(false); return }
       setUser(u); setIsAdmin(true)
       try {
         const [b, us, t, cr] = await Promise.all([getAllBookings(), getAllUsers(), getAllTickets(), getAllContactRequests()])
