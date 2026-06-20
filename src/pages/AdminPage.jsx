@@ -213,7 +213,7 @@ function PinGate({ onPass }) {
   const [error, setError]   = useState(false)
   const [shake, setShake]   = useState(false)
 
-  const CORRECT = import.meta.env.VITE_ADMIN_PIN || 'Delta@2025'
+  const CORRECT = import.meta.env.VITE_ADMIN_PIN || 'Delta@2026'
 
   const check = () => {
     if (pin === CORRECT) {
