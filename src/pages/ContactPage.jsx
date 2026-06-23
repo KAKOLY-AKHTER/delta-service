@@ -81,7 +81,7 @@ export default function ContactPage() {
             },
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>,
-              bg: '#EA4335', title: 'Email', value: 'info@deltacaretransport.com', sub: 'Reply within 24 hours', href: 'mailto:info@deltacaretransport.com',
+              bg: '#EA4335', title: 'Email', value: 'info@dmctransport.us', sub: 'Reply within 24 hours', href: 'mailto:info@dmctransport.us',
             },
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>,

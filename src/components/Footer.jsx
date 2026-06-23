@@ -36,7 +36,7 @@ const contactItems = [
         <polyline points="22,6 12,13 2,6" />
       </svg>
     ),
-    label: 'Email', value: 'info@deltacaretransport.com',
+    label: 'Email', value: 'info@dmctransport.us',
   },
   {
     icon: (

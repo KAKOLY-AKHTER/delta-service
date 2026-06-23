@@ -1192,7 +1192,7 @@ function SupportSection({ user }) {
         {[
           { icon:'📞', label:'Call Us',     val:'(470) 336-7475', href:'tel:+14703367475', color:'#0a2558', bg:'#e8eef8', accent:'#0a2558' },
           { icon:'💬', label:'WhatsApp',    val:'Chat Now',        href:'https://wa.me/14703367475', color:'#15803d', bg:'#dcfce7', accent:'#22c55e' },
-          { icon:'✉️', label:'Email',       val:'Send Email',      href:'mailto:info@deltacare.com', color:'#1d4ed8', bg:'#dbeafe', accent:'#3b82f6' },
+          { icon:'✉️', label:'Email',       val:'Send Email',      href:'mailto:info@dmctransport.us', color:'#1d4ed8', bg:'#dbeafe', accent:'#3b82f6' },
         ].map(c => (
           <a key={c.label} href={c.href} target="_blank" rel="noreferrer"
             className="rounded-2xl overflow-hidden no-underline dash-card"
@@ -1997,7 +1997,7 @@ function ReferralSection({ uid, loyalty, setLoyalty, loyaltyHistory, setLoyaltyH
   const [redeeming, setRedeeming] = useState(null)
 
   const REFERRAL_CODE = loyalty.referralCode || ('DELTA-' + uid.slice(0,6).toUpperCase())
-  const REFERRAL_LINK = `deltacaretransport.com/signup?ref=${REFERRAL_CODE}`
+  const REFERRAL_LINK = `dmctransport.us/signup?ref=${REFERRAL_CODE}`
 
   const copy = (text) => {
     navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(()=>setCopied(false), 2000) })

@@ -26,7 +26,7 @@ const contacts = [
   },
   {
     label: 'Email',
-    href: 'mailto:info@deltacaredtransport.com',
+    href: 'mailto:info@dmctransport.us',
     bg: '#EA4335',
     shadow: 'rgba(234,67,53,0.40)',
     icon: (
