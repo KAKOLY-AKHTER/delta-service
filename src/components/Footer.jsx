@@ -348,9 +348,9 @@ export default function Footer() {
           © {new Date().getFullYear()} <span className="text-white font-semibold">Delta Care Transport</span>. All rights reserved.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
-          {['Privacy Policy', 'Terms of Service', 'Non-Medical Transportation'].map((item) => (
-            <a key={item} href="#" className="text-blue-200 text-sm hover:text-orange-400 transition-colors">{item}</a>
-          ))}
+          <Link to="/privacy-policy" className="text-blue-200 text-sm hover:text-orange-400 transition-colors" style={{ textDecoration:'none' }}>Privacy Policy</Link>
+          <Link to="/terms" className="text-blue-200 text-sm hover:text-orange-400 transition-colors" style={{ textDecoration:'none' }}>Terms of Service</Link>
+          <Link to="/non-medical-transportation" className="text-blue-200 text-sm hover:text-orange-400 transition-colors" style={{ textDecoration:'none' }}>Non-Medical Transportation</Link>
         </div>
       </div>
 

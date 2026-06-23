@@ -15,6 +15,9 @@ import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import DashboardPage from './pages/DashboardPage'
 import AdminPage from './pages/AdminPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import TermsOfServicePage from './pages/TermsOfServicePage'
+import NonMedicalTransportPage from './pages/NonMedicalTransportPage'
 
 const AUTH_ROUTES = ['/login', '/signup', '/dashboard', '/admin']
 
@@ -41,8 +44,11 @@ function Layout() {
           <Route path="/contact"      element={<ContactPage />} />
           <Route path="/login"        element={<LoginPage />} />
           <Route path="/signup"       element={<SignUpPage />} />
-          <Route path="/dashboard"    element={<DashboardPage />} />
-          <Route path="/admin"        element={<AdminPage />} />
+          <Route path="/dashboard"              element={<DashboardPage />} />
+          <Route path="/admin"                  element={<AdminPage />} />
+          <Route path="/privacy-policy"         element={<PrivacyPolicyPage />} />
+          <Route path="/terms"                  element={<TermsOfServicePage />} />
+          <Route path="/non-medical-transportation" element={<NonMedicalTransportPage />} />
         </Routes>
       </main>
       {!isAuth && <Footer />}
