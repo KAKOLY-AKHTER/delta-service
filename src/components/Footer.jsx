@@ -344,9 +344,14 @@ export default function Footer() {
       {/* ── BOTTOM BAR ── */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 md:px-10 lg:px-[52px] py-5"
         style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-        <p className="text-blue-200 text-sm text-center sm:text-left">
-          © {new Date().getFullYear()} <span className="text-white font-semibold">Delta Care Transport</span>. All rights reserved.
-        </p>
+        <div className="text-center sm:text-left">
+          <p className="text-blue-200 text-sm">
+            © {new Date().getFullYear()} <span className="text-white font-semibold">Delta Care Transport</span>. All rights reserved.
+          </p>
+          <p className="text-blue-300 mt-0.5" style={{ fontSize: '12px' }}>
+            Designed and developed by <a href="https://nexviya.com" target="_blank" rel="noopener noreferrer" style={{ color: '#f97316', textDecoration: 'none', fontWeight: 600 }}>Nexviya.com</a>
+          </p>
+        </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link to="/privacy-policy" className="text-blue-200 text-sm hover:text-orange-400 transition-colors" style={{ textDecoration:'none' }}>Privacy Policy</Link>
           <Link to="/terms" className="text-blue-200 text-sm hover:text-orange-400 transition-colors" style={{ textDecoration:'none' }}>Terms of Service</Link>
