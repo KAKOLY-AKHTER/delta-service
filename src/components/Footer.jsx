@@ -232,6 +232,27 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* ── ROAD + RUNNING VAN ── */}
+      <div style={{ position: 'relative', width: '100%', height: '48px', background: '#0a1f4a', overflow: 'hidden', borderTop: '2px solid rgba(255,255,255,0.06)', borderBottom: '2px solid rgba(255,255,255,0.06)' }}>
+        {/* Road dashes */}
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', transform: 'translateY(-50%)' }}>
+          <div style={{ width: '100%', height: '2px', backgroundImage: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 30px, transparent 30px, transparent 60px)' }} />
+        </div>
+        {/* Running van */}
+        <img
+          src={deltaCar1}
+          alt="van"
+          style={{
+            position: 'absolute',
+            bottom: '6px',
+            left: 0,
+            height: '32px',
+            width: 'auto',
+            animation: 'vanRun 8s linear infinite',
+          }}
+        />
+      </div>
+
       {/* ── MAIN FOOTER ── */}
       <div className="px-5 md:px-10 lg:px-[52px] py-12 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
