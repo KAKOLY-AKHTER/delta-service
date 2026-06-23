@@ -206,7 +206,7 @@ export default function Services() {
                   {/* Title */}
                   <h3 style={{
                     fontWeight: 900, color: '#0a2558',
-                    fontSize: isCenter ? '16px' : '13.5px',
+                    fontSize: '14px',
                     lineHeight: 1.25, marginBottom: '8px',
                     opacity: isCenter ? 1 : 0.65,
                     transition: transit ? `all ${TRANSIT_MS}ms ease` : 'none',
@@ -216,10 +216,11 @@ export default function Services() {
 
                   {/* Desc */}
                   <p style={{
-                    color: '#64748b', fontSize: isCenter ? '13px' : '12px',
-                    lineHeight: 1.7, maxWidth: isCenter ? '220px' : '180px',
+                    color: '#64748b', fontSize: '12.5px',
+                    lineHeight: 1.7, maxWidth: '200px',
                     opacity: isCenter ? 1 : 0.55,
                     transition: transit ? `all ${TRANSIT_MS}ms ease` : 'none',
+                    minHeight: '60px',
                   }}>
                     {s.desc}
                   </p>

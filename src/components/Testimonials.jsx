@@ -133,7 +133,7 @@ export default function Testimonials() {
                   width: `${CARD_W}px`,
                   flexShrink: 0,
                   borderRadius: '20px',
-                  padding: isCenter ? '36px 28px 28px' : '28px 24px',
+                  padding: '28px 24px',
                   background: isCenter ? '#0a2558' : '#f8faff',
                   border: isCenter ? 'none' : '1px solid #e8eef8',
                   boxShadow: isCenter
