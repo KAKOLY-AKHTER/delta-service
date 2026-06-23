@@ -88,10 +88,11 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Vehicles running right to left across footer */
-@keyframes vanRun {
-  0%   { transform: translateX(100vw); }
-  100% { transform: translateX(-200px); }
+
+/* Vehicle marquee — container slides left by one full set (5 × 310px = 1550px) */
+@keyframes trackRun {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-1550px); }
 }
 
 /* ─────────────────────────────────────────

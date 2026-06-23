@@ -114,8 +114,8 @@ export default function DashboardPage() {
     <div className="min-h-screen flex items-center justify-center" style={{ background:'linear-gradient(135deg,#0b1a3d,#0a2558)' }}>
       <div className="text-center">
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
-          style={{ background:'white', boxShadow:'0 8px 32px rgba(249,115,22,0.3)', border:'2px solid #f97316' }}>
-          <img src={logo} alt="Delta" style={{ width:'40px', objectFit:'contain' }} />
+          style={{ background:'white', boxShadow:'0 8px 32px rgba(10,37,88,0.25)' }}>
+          <img src={logo} alt="Delta" style={{ width:'48px', objectFit:'contain' }} />
         </div>
         <div style={{ width:'36px', height:'36px', borderRadius:'50%', border:'3px solid rgba(255,255,255,0.1)', borderTop:'3px solid #f97316', animation:'spin 0.8s linear infinite', margin:'0 auto' }} />
       </div>
@@ -140,8 +140,8 @@ export default function DashboardPage() {
 
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom:'1px solid rgba(255,255,255,0.07)' }}>
-          <div style={{ width:'44px', height:'44px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 0 2px #f97316, 0 4px 16px rgba(249,115,22,0.3)', flexShrink:0 }}>
-            <img src={logo} alt="Delta" style={{ width:'36px', objectFit:'contain' }} />
+          <div style={{ width:'44px', height:'44px', borderRadius:'12px', background:'white', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 16px rgba(10,37,88,0.22)', flexShrink:0 }}>
+            <img src={logo} alt="Delta" style={{ width:'40px', objectFit:'contain' }} />
           </div>
           <div>
             <p className="text-white font-black" style={{ fontSize:'14px', lineHeight:1.2, letterSpacing:'-0.01em' }}>Delta Care</p>
@@ -1289,12 +1289,6 @@ function ServiceAreaSection() {
     { label:'Service Radius',     value:'50mi', emoji:'📍' },
   ]
 
-  const hours = [
-    { day:'Monday – Friday', time:'5:00 AM – 10:00 PM' },
-    { day:'Saturday',        time:'6:00 AM – 8:00 PM'  },
-    { day:'Sunday',          time:'7:00 AM – 6:00 PM'  },
-    { day:'Holidays',        time:'By appointment only' },
-  ]
 
   return (
     <div className="dash-section">
@@ -1370,22 +1364,6 @@ function ServiceAreaSection() {
         {/* Right sidebar */}
         <div className="flex flex-col gap-4">
 
-          {/* Service hours */}
-          <Card className="p-5">
-            <SectionTitle>Service Hours</SectionTitle>
-            <div className="flex flex-col gap-2.5">
-              {hours.map(h => (
-                <div key={h.day} className="flex items-center justify-between py-2" style={{ borderBottom:'1px solid #f8fafc' }}>
-                  <p className="font-semibold text-gray-700" style={{ fontSize:'13px' }}>{h.day}</p>
-                  <p className="font-bold text-[#0a2558]" style={{ fontSize:'12.5px' }}>{h.time}</p>
-                </div>
-              ))}
-              <div className="mt-1 rounded-xl p-3 flex items-center gap-2" style={{ background:'#fff7ed', border:'1px solid #fed7aa' }}>
-                <span style={{ fontSize:'16px' }}>🚨</span>
-                <p style={{ fontSize:'12px', color:'#9a3412', fontWeight:600 }}>Emergency rides available 24/7 — call (470) 336-7475</p>
-              </div>
-            </div>
-          </Card>
 
           {/* Outside area? */}
           <Card className="p-5">

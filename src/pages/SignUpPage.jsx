@@ -114,8 +114,8 @@ export default function SignUpPage() {
           style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '26px 26px' }} />
 
         <div className="relative z-10 flex items-center gap-3">
-          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 3px #f97316' }}>
-            <img src={logo} alt="Delta Care Transport" style={{ width: '48px', height: '48px', objectFit: 'contain' }} />
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 20px rgba(10,37,88,0.25)' }}>
+            <img src={logo} alt="Delta Care Transport" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
           </div>
           <div>
             <p className="text-white font-black" style={{ fontSize: '15px', lineHeight: 1.2 }}>Delta Care</p>
@@ -161,8 +161,8 @@ export default function SignUpPage() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2.5px #f97316' }}>
-              <img src={logo} alt="Delta Care Transport" style={{ width: '38px', objectFit: 'contain' }} />
+            <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(10,37,88,0.22)' }}>
+              <img src={logo} alt="Delta Care Transport" style={{ width: '42px', objectFit: 'contain' }} />
             </div>
             <p className="font-black text-[#0a2558]" style={{ fontSize: '15px' }}>Delta Care Transport</p>
           </div>

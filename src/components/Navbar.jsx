@@ -73,20 +73,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="relative shrink-0 mr-6 lg:mr-10"
             style={{ width: '130px', height: '76px', display: 'block' }}>
-            <div style={{
-              position: 'absolute', top: '2px', left: '-4px', zIndex: 9,
-              width: '132px', height: '132px', borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f97316, #ea580c)', opacity: 0.25,
-            }} />
-            <div style={{
-              position: 'absolute', top: '6px', left: 0, zIndex: 10,
-              width: '124px', height: '124px', borderRadius: '50%',
-              background: 'white',
-              boxShadow: '0 6px 32px rgba(10,37,88,0.22), 0 0 0 3px #f97316',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-            }}>
+            <div style={{ position: 'absolute', top: '6px', left: 0, zIndex: 10, width: '124px', height: '124px', borderRadius: '50%', background: 'white', boxShadow: '0 6px 32px rgba(10,37,88,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
               <img src={logo} alt="Delta Medical Care Transport"
-                style={{ width: '114px', height: '114px', objectFit: 'contain' }} />
+                style={{ width: '124px', height: '124px', objectFit: 'contain' }} />
             </div>
           </Link>
 

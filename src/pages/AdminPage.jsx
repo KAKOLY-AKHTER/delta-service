@@ -237,7 +237,7 @@ function PinGate({ onPass }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden"
-            style={{ background:'white', boxShadow:'0 0 0 3px #f97316, 0 8px 32px rgba(249,115,22,0.4)' }}>
+            style={{ background:'white', boxShadow:'0 8px 32px rgba(10,37,88,0.25)' }}>
             <img src={logo} alt="Delta Care" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
           <p className="text-white font-black" style={{ fontSize:'22px', letterSpacing:'-0.02em' }}>Delta Care Admin</p>
@@ -416,7 +416,7 @@ export default function AdminPage() {
         {/* Logo */}
         <div className="p-5 flex items-center gap-3" style={{ borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
           <div className="w-10 h-10 rounded-full shrink-0 overflow-hidden"
-            style={{ background:'white', boxShadow:'0 0 0 2px #f97316, 0 4px 12px rgba(249,115,22,0.35)' }}>
+            style={{ background:'white', boxShadow:'0 4px 12px rgba(10,37,88,0.22)' }}>
             <img src={logo} alt="Delta Care" style={{ width:'100%', height:'100%', objectFit:'contain' }} />
           </div>
           <div>

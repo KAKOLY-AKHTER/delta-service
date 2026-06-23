@@ -3,12 +3,6 @@ import PageBanner from '../components/PageBanner'
 import useInView from '../hooks/useInView'
 import { submitContactRequest } from '../services/firestoreService'
 
-const hours = [
-  { day: 'Monday – Friday', time: '6:00 AM – 10:00 PM' },
-  { day: 'Saturday', time: '7:00 AM – 8:00 PM' },
-  { day: 'Sunday', time: '8:00 AM – 6:00 PM' },
-  { day: 'Scheduling & Booking', time: '24 Hours / 7 Days' },
-]
 
 const serviceTypes = ['Medical Appointments', 'Dialysis Transportation', 'Airport Transfers', 'Rehabilitation Center', 'Family & Social Visits', 'Shopping & Errands', 'Other']
 
@@ -133,17 +127,6 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* Hours */}
-            <p className="font-black text-[#0a2558] mb-3" style={{ fontSize: '13px', letterSpacing: '0.04em' }}>SERVICE HOURS</p>
-            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #e8eef8' }}>
-              {hours.map((h, i) => (
-                <div key={h.day} className="flex justify-between items-center px-4 py-2.5"
-                  style={{ background: i % 2 === 0 ? '#f8faff' : '#fff', borderTop: i > 0 ? '1px solid #f0f4fb' : 'none' }}>
-                  <span className="text-gray-600 font-medium" style={{ fontSize: '12.5px' }}>{h.day}</span>
-                  <span className="font-bold text-[#0a2558]" style={{ fontSize: '12.5px' }}>{h.time}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Form */}
