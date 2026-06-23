@@ -2,24 +2,24 @@ import useInView from '../hooks/useInView'
 import CountUp from './CountUp'
 
 const cities = [
-  { name: 'Atlanta', main: true },
-  { name: 'Decatur' },
-  { name: 'Marietta' },
-  { name: 'Sandy Springs' },
-  { name: 'Smyrna' },
-  { name: 'Roswell' },
-  { name: 'Alpharetta' },
-  { name: 'Tucker' },
-  { name: 'Stone Mountain' },
-  { name: 'Lithonia' },
-  { name: 'Conyers' },
-  { name: 'Norcross' },
-  { name: 'Chamblee' },
-  { name: 'College Park' },
-  { name: 'East Point' },
-  { name: 'Morrow' },
-  { name: 'Stockbridge' },
-  { name: 'Clarkston' },
+  { name: 'Lathrop', main: true },
+  { name: 'Stockton' },
+  { name: 'Manteca' },
+  { name: 'Tracy' },
+  { name: 'Modesto' },
+  { name: 'Ripon' },
+  { name: 'Escalon' },
+  { name: 'Lodi' },
+  { name: 'Turlock' },
+  { name: 'Patterson' },
+  { name: 'Newman' },
+  { name: 'Ceres' },
+  { name: 'Oakdale' },
+  { name: 'Riverbank' },
+  { name: 'Waterford' },
+  { name: 'Gustine' },
+  { name: 'Los Banos' },
+  { name: 'Merced' },
 ]
 
 const features = [
@@ -76,11 +76,11 @@ export default function ServiceArea() {
             className="font-black text-[#0a2558] leading-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}
           >
-            We Serve <span style={{ color: '#f97316' }}>Metro Atlanta</span><br />
+            We Serve <span style={{ color: '#f97316' }}>Lathrop, California</span><br />
             & Surrounding Areas
           </h2>
           <p className="text-gray-500 mt-3 mx-auto" style={{ fontSize: '15px', maxWidth: '460px' }}>
-            Delta Care Transport proudly covers a wide service area across Georgia. Not sure if we serve your location? Just call us!
+            Delta Care Transport proudly covers a wide service area across California. Not sure if we serve your location? Just call us!
           </p>
         </div>
 

@@ -6,7 +6,7 @@ const services = [
   { icon: '🏥', title: 'Medical Appointments', desc: 'Reliable rides to doctor visits, specialist consultations, clinics, and outpatient procedures.' },
   { icon: '💉', title: 'Dialysis Treatments', desc: 'Consistent, on-time transportation for patients requiring regular dialysis sessions.' },
   { icon: '🧠', title: 'Therapy Sessions', desc: 'Physical therapy, occupational therapy, mental health appointments, and rehabilitation visits.' },
-  { icon: '✈️', title: 'Airport Transfers', desc: 'Stress-free rides to and from Hartsfield-Jackson Atlanta International Airport.' },
+  { icon: '✈️', title: 'Airport Transfers', desc: 'Stress-free rides to and from Sacramento International Airport and San Jose International Airport.' },
   { icon: '🏘️', title: 'Family & Social Visits', desc: 'Transportation for seniors and individuals who need help visiting family, friends, or community events.' },
   { icon: '🛒', title: 'Errands & Shopping', desc: 'Grocery runs, pharmacy pickups, and other daily errands for those who need mobility assistance.' },
 ]
@@ -42,7 +42,7 @@ const faqs = [
   { q: 'Who qualifies for non-medical transportation?', a: 'Anyone who needs a reliable ride to a medical appointment, therapy session, or other destination but does not require emergency medical care during transport. This includes seniors, individuals with disabilities, and patients recovering from surgery.' },
   { q: 'Do you offer wheelchair-accessible vehicles?', a: 'Yes, we have wheelchair-accessible vehicles available upon request. Please specify your accessibility needs when booking so we can dispatch the appropriate vehicle.' },
   { q: 'How far in advance should I book?', a: 'We recommend booking at least 24 hours in advance to ensure availability. For recurring appointments (such as dialysis), we offer standing reservation options. Same-day rides may be available based on driver availability.' },
-  { q: 'What areas do you serve?', a: 'We primarily serve Metro Atlanta and surrounding communities within a 30-mile radius. Please contact us if you have a specific destination to confirm service availability.' },
+  { q: 'What areas do you serve?', a: 'We primarily serve Lathrop and surrounding communities including Stockton, Manteca, Tracy, Modesto, and more within a 30-mile radius. Please contact us if you have a specific destination to confirm service availability.' },
   { q: 'Can a family member ride along?', a: 'Yes, family members or caregivers are welcome to accompany passengers. Please let us know at the time of booking so we can ensure appropriate seating.' },
   { q: 'Is your service covered by insurance or Medicaid?', a: 'Coverage varies depending on your insurance plan. We recommend contacting your insurance provider or Medicaid case manager to verify coverage for non-emergency medical transportation (NEMT).' },
 ]
@@ -73,7 +73,7 @@ export default function NonMedicalTransportPage() {
                 Non-medical transportation (also called non-emergency medical transportation or NEMT) provides reliable rides for individuals who need to attend medical appointments, therapy sessions, or other destinations but do not require emergency medical care or a medical professional during the ride.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6" style={{ fontSize: '15.5px' }}>
-                Delta Care Transport specializes in this service — offering a compassionate, professional alternative to expensive ambulance rides for stable patients, seniors, and individuals with disabilities in Metro Atlanta.
+                Delta Care Transport specializes in this service — offering a compassionate, professional alternative to expensive ambulance rides for stable patients, seniors, and individuals with disabilities in Lathrop, California.
               </p>
               <div className="flex flex-col gap-3">
                 {['Licensed, insured & background-checked drivers', 'Wheelchair-accessible vehicles available', 'On-time guarantee for all scheduled rides', 'Door-to-door service from pickup to destination'].map(item => (
@@ -200,7 +200,7 @@ export default function NonMedicalTransportPage() {
                 Book Your Ride Today
               </h3>
               <p className="text-blue-200 mb-8 mx-auto leading-relaxed" style={{ fontSize: '15px', maxWidth: '480px' }}>
-                Safe, reliable, and compassionate non-medical transportation for patients, seniors, and families across Metro Atlanta.
+                Safe, reliable, and compassionate non-medical transportation for patients, seniors, and families across Lathrop, California.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link to="/contact"

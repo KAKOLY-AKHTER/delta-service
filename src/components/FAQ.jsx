@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: 'What areas do you currently serve?',
-    a: "We serve Metro Atlanta and surrounding areas including Decatur, Marietta, Sandy Springs, Smyrna, Roswell, Alpharetta, Tucker, Stone Mountain, Lithonia, Conyers, and more. Contact us if your location isn't listed — we may still be able to help.",
+    a: "We serve Lathrop and surrounding areas including Stockton, Manteca, Tracy, Modesto, Ripon, Lodi, Turlock, and more. Contact us if your location isn't listed — we may still be able to help.",
   },
   {
     q: 'Do you accept Medicaid or insurance?',

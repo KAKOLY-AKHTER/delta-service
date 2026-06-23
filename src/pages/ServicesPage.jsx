@@ -26,7 +26,7 @@ const services = [
     title: 'Airport Transfers',
     category: 'Travel Transport',
     desc: 'Start your journey stress-free. We provide reliable airport pick-up and drop-off service, tracking your flight to ensure we are there when you need us — no matter what time your flight lands.',
-    features: ['Real-time flight tracking', 'Early morning & late night available', 'Luggage assistance', 'All Atlanta-area airports'],
+    features: ['Real-time flight tracking', 'Early morning & late night available', 'Luggage assistance', 'Sacramento & San Jose airports'],
   },
   {
     img: rehabImg,
@@ -62,7 +62,7 @@ export default function ServicesPage() {
       <section style={{ background: '#fff', padding: '64px 20px 48px' }} className="px-5 md:px-10 lg:px-[52px]">
         <div className="mx-auto text-center" style={{ maxWidth: '700px' }}>
           <p className="text-gray-600 leading-relaxed" style={{ fontSize: '16px' }}>
-            Delta Care Transport offers a full range of non-medical transportation services across Metro Atlanta. Whether you need a one-time ride or regular recurring transportation, we are here — 24 hours a day, 7 days a week.
+            Delta Care Transport offers a full range of non-medical transportation services across Lathrop, California. Whether you need a one-time ride or regular recurring transportation, we are here — 24 hours a day, 7 days a week.
           </p>
           <div style={{ width: '60px', height: '3px', background: '#f97316', borderRadius: '2px', margin: '28px auto 0' }} />
         </div>

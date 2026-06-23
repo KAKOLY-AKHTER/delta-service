@@ -51,7 +51,7 @@ const terms = [
   {
     num: '10',
     title: 'Governing Law',
-    content: 'These Terms of Service shall be governed by and construed in accordance with the laws of the State of Georgia, without regard to its conflict of law provisions. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the courts located in Atlanta, Georgia.',
+    content: 'These Terms of Service shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the courts located in Lathrop, California.',
   },
 ]
 
@@ -105,7 +105,7 @@ export default function TermsOfServicePage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
                 { icon: '📋', title: '10 Key Terms', desc: 'Clear and straightforward conditions' },
-                { icon: '⚖️', title: 'Georgia Law', desc: 'Governed by the State of Georgia' },
+                { icon: '⚖️', title: 'California Law', desc: 'Governed by the State of California' },
                 { icon: '📞', title: 'Questions?', desc: 'Contact us anytime for clarification' },
               ].map((c) => (
                 <div key={c.title} className="text-center rounded-2xl p-5" style={{ background: '#f8faff', border: '1.5px solid #e8eef8' }}>

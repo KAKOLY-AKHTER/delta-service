@@ -4,23 +4,23 @@ import CountUp from './CountUp'
 
 const testimonials = [
   {
-    name: 'Margaret T.', role: 'Dialysis Patient', location: 'Atlanta, GA', stars: 5,
+    name: 'Margaret T.', role: 'Dialysis Patient', location: 'Lathrop, CA', stars: 5,
     quote: 'Delta Care Transport has been a lifesaver for me. They are always on time for my dialysis appointments, and the drivers are so kind and patient. I feel safe and comfortable every single trip.',
   },
   {
-    name: 'Robert J.', role: 'Senior Passenger', location: 'Marietta, GA', stars: 5,
+    name: 'Robert J.', role: 'Senior Passenger', location: 'Stockton, CA', stars: 5,
     quote: "I've used many transportation services before, but Delta Care is truly the best. The vehicle was clean, the driver was professional, and they helped me door-to-door. Highly recommend!",
   },
   {
-    name: 'Linda M.', role: 'Family Member', location: 'Decatur, GA', stars: 5,
+    name: 'Linda M.', role: 'Family Member', location: 'Manteca, CA', stars: 5,
     quote: "We use Delta Care Transport for my mother's medical appointments. They are reliable, caring, and always communicate ahead of time. It gives our whole family peace of mind. Thank you!",
   },
   {
-    name: 'James K.', role: 'Cancer Patient', location: 'Sandy Springs, GA', stars: 5,
+    name: 'James K.', role: 'Cancer Patient', location: 'Tracy, CA', stars: 5,
     quote: 'After my surgery, I needed reliable transportation to my follow-up visits. Delta Care was there every time — punctual, courteous, and genuinely caring. I recommend them to everyone.',
   },
   {
-    name: 'Susan P.', role: 'Elderly Passenger', location: 'Smyrna, GA', stars: 5,
+    name: 'Susan P.', role: 'Elderly Passenger', location: 'Modesto, CA', stars: 5,
     quote: 'As a senior living alone, I depend on Delta Care for grocery runs and doctor appointments. The drivers are respectful and always make sure I get inside safely. Outstanding service!',
   },
 ]

@@ -920,7 +920,7 @@ function FavoritesSection({ uid, favorites, setFavorites }) {
           </div>
           <div>
             <label className="block font-semibold text-[#0a2558] mb-1.5" style={{ fontSize:'13px' }}>Full Address *</label>
-            <input value={form.address} onChange={e=>setForm(f=>({...f,address:e.target.value}))} placeholder="123 Main St, Atlanta, GA" style={INP} onFocus={focus} onBlur={blur} />
+            <input value={form.address} onChange={e=>setForm(f=>({...f,address:e.target.value}))} placeholder="123 Main St, Lathrop, CA" style={INP} onFocus={focus} onBlur={blur} />
           </div>
           <div>
             <label className="block font-semibold text-[#0a2558] mb-2" style={{ fontSize:'13px' }}>Icon</label>
@@ -1084,7 +1084,7 @@ function ProfileSection({ user, setUser }) {
       <Card className="p-6">
         {tab === 'personal' && (
           <form onSubmit={handleSave} className="flex flex-col gap-4">
-            {[['Full Name','displayName','text','Your full name'],['Phone Number','phone','tel','(470) 000-0000'],['Home Address','address','text','123 Main St, Atlanta, GA']].map(([lbl,key,type,ph])=>(
+            {[['Full Name','displayName','text','Your full name'],['Phone Number','phone','tel','(470) 000-0000'],['Home Address','address','text','123 Main St, Lathrop, CA']].map(([lbl,key,type,ph])=>(
               <div key={key}>
                 <label className="block font-semibold text-[#0a2558] mb-1.5" style={{ fontSize:'13px' }}>{lbl}</label>
                 <input type={type} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} placeholder={ph} style={INP} onFocus={focus} onBlur={blur} />
@@ -1164,7 +1164,7 @@ function SupportSection({ user }) {
     { q:'Can I reschedule my ride?',           a:'Yes! In My Bookings, click "Reschedule" on any upcoming booking and choose a new date and time.' },
     { q:'How far in advance should I book?',   a:'We recommend booking at least 24-48 hours in advance. For recurring rides, book at least 72 hours before your first trip.' },
     { q:'Do you provide wheelchair transport?', a:'Yes. Mark "Wheelchair Required" in My Profile → Medical Needs and our wheelchair-accessible vehicles will be assigned.' },
-    { q:'What areas do you serve?',            a:'We serve Metro Atlanta and surrounding areas including Fulton, DeKalb, Gwinnett, Cobb, and Clayton counties.' },
+    { q:'What areas do you serve?',            a:'We serve Lathrop and surrounding areas including Stockton, Manteca, Tracy, Modesto, Turlock, and more across San Joaquin and Stanislaus counties.' },
   ]
 
   const submit = async e => {
@@ -1274,12 +1274,12 @@ function ServiceAreaSection() {
   const [activeCounty, setActiveCounty] = useState(null)
 
   const counties = [
-    { name:'Fulton County',   color:'#f97316', cities:'Atlanta, Sandy Springs, Alpharetta, Roswell, Johns Creek',        hospitals:'Grady Memorial, Piedmont Atlanta, Northside Hospital' },
-    { name:'DeKalb County',   color:'#0a2558', cities:'Decatur, Tucker, Dunwoody, Chamblee, Stone Mountain',             hospitals:'Emory University Hospital, Children\'s Healthcare' },
-    { name:'Gwinnett County', color:'#1d4ed8', cities:'Lawrenceville, Duluth, Norcross, Snellville, Buford',             hospitals:'Northside Hospital Gwinnett, Emory Johns Creek' },
-    { name:'Cobb County',     color:'#15803d', cities:'Marietta, Smyrna, Kennesaw, Acworth, Powder Springs',             hospitals:'WellStar Kennestone, Piedmont Marietta' },
-    { name:'Clayton County',  color:'#7c3aed', cities:'Jonesboro, Forest Park, Riverdale, Morrow, Lake City',            hospitals:'Southern Regional Medical, Piedmont Fayette' },
-    { name:'Henry County',    color:'#b91c1c', cities:'McDonough, Stockbridge, Hampton, Locust Grove',                   hospitals:'Piedmont Henry, Wellstar Spalding' },
+    { name:'San Joaquin County', color:'#f97316', cities:'Lathrop, Stockton, Manteca, Tracy, Ripon',          hospitals:'St. Joseph\'s Medical Center, Dameron Hospital' },
+    { name:'Stanislaus County',  color:'#0a2558', cities:'Modesto, Turlock, Ceres, Riverbank, Oakdale',        hospitals:'Memorial Medical Center, Emanuel Medical Center' },
+    { name:'Merced County',      color:'#1d4ed8', cities:'Merced, Los Banos, Atwater, Livingston, Gustine',    hospitals:'Mercy Medical Center Merced, Dignity Health' },
+    { name:'Alameda County',     color:'#15803d', cities:'Fremont, Newark, Union City, Hayward, San Leandro',  hospitals:'Kaiser Fremont, Washington Hospital' },
+    { name:'Contra Costa',       color:'#7c3aed', cities:'Antioch, Brentwood, Oakley, Pittsburg, Concord',     hospitals:'Sutter Delta Medical, Kaiser Antioch' },
+    { name:'Sacramento County',  color:'#b91c1c', cities:'Sacramento, Elk Grove, Folsom, Citrus Heights',      hospitals:'UC Davis Medical Center, Sutter General' },
   ]
 
   const stats = [
@@ -1318,7 +1318,7 @@ function ServiceAreaSection() {
           <Card className="overflow-hidden">
             <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom:'1px solid #f1f5f9' }}>
               <div style={{ width:'4px', height:'20px', background:'#f97316', borderRadius:'2px' }} />
-              <p className="font-black text-[#0a2558]" style={{ fontSize:'15px' }}>Metro Atlanta Service Area</p>
+              <p className="font-black text-[#0a2558]" style={{ fontSize:'15px' }}>Lathrop, CA Service Area</p>
               <span className="ml-auto text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background:'#dcfce7', color:'#15803d' }}>● Live Coverage</span>
             </div>
             <div style={{ position:'relative', height:'420px', background:'#f1f7fe' }}>
@@ -1332,7 +1332,7 @@ function ServiceAreaSection() {
               <div className="absolute bottom-3 left-3 rounded-xl px-3 py-2 flex items-center gap-2"
                 style={{ background:'white', boxShadow:'0 4px 16px rgba(0,0,0,0.15)', border:'1px solid #e8eef8' }}>
                 <div style={{ width:'10px', height:'10px', borderRadius:'50%', background:'#f97316' }} />
-                <span className="font-bold text-[#0a2558]" style={{ fontSize:'12px' }}>Atlanta, GA — Home Base</span>
+                <span className="font-bold text-[#0a2558]" style={{ fontSize:'12px' }}>Lathrop, CA — Home Base</span>
               </div>
             </div>
           </Card>
@@ -1644,7 +1644,7 @@ function InsuranceSection({ uid }) {
   const [tab, setTab]       = useState('primary')
   const [saved, setSaved]   = useState(false)
   const [primary, setPrimary] = useState({ provider:'', memberId:'', groupNum:'', planName:'', planType:'', phone:'' })
-  const [medicaid, setMedicaid] = useState({ state:'Georgia', medicaidId:'', medicareId:'', type:'Medicaid' })
+  const [medicaid, setMedicaid] = useState({ state:'California', medicaidId:'', medicareId:'', type:'Medicaid' })
   const [secondary, setSecondary] = useState({ provider:'', memberId:'', groupNum:'', planName:'' })
 
   useEffect(() => {
@@ -1662,7 +1662,7 @@ function InsuranceSection({ uid }) {
   }
 
   const PLAN_TYPES  = ['HMO','PPO','EPO','POS','HDHP','Medicaid Managed Care','Medicare Advantage','Other']
-  const STATES      = ['Georgia','Alabama','Florida','Tennessee','South Carolina','North Carolina']
+  const STATES      = ['California','Nevada','Oregon','Arizona','Washington','Utah']
 
   const Field = ({ label, value, onChange, placeholder, type='text', options }) => (
     <div>

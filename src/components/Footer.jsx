@@ -54,7 +54,7 @@ const contactItems = [
         <circle cx="12" cy="10" r="3" />
       </svg>
     ),
-    label: 'Location', value: 'Atlanta, Georgia',
+    label: 'Location', value: 'Lathrop, California',
   },
 ]
 
@@ -263,7 +263,7 @@ export default function Footer() {
             </p>
             <p className="text-blue-100 leading-relaxed mb-6" style={{ fontSize: '14px' }}>
               Professional non-medical transportation you can trust — serving patients, seniors,
-              and families across Atlanta and beyond.
+              and families across Lathrop and beyond.
             </p>
             <div className="flex gap-3">
               {socials.map((s) => (
