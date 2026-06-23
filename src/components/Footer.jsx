@@ -232,25 +232,74 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ── ROAD + RUNNING VAN ── */}
-      <div style={{ position: 'relative', width: '100%', height: '48px', background: '#0a1f4a', overflow: 'hidden', borderTop: '2px solid rgba(255,255,255,0.06)', borderBottom: '2px solid rgba(255,255,255,0.06)' }}>
+      {/* ── ROAD + RUNNING VEHICLES ── */}
+      <div style={{ position: 'relative', width: '100%', height: '56px', background: '#071428', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* Road surface */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '28px', background: '#0d1f3c' }} />
         {/* Road dashes */}
-        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', transform: 'translateY(-50%)' }}>
-          <div style={{ width: '100%', height: '2px', backgroundImage: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 30px, transparent 30px, transparent 60px)' }} />
+        <div style={{ position: 'absolute', bottom: '12px', left: 0, right: 0, height: '3px' }}>
+          <div style={{ width: '100%', height: '3px', backgroundImage: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 40px, transparent 40px, transparent 80px)' }} />
         </div>
-        {/* Running van */}
-        <img
-          src={deltaCar1}
-          alt="van"
-          style={{
-            position: 'absolute',
-            bottom: '6px',
-            left: 0,
-            height: '32px',
-            width: 'auto',
-            animation: 'vanRun 8s linear infinite',
-          }}
-        />
+
+        {/* Vehicle 1 — Ambulance Van (orange) */}
+        <svg viewBox="0 0 120 50" style={{ position:'absolute', bottom:'10px', height:'30px', animation:'vanRun 9s linear infinite', animationDelay:'0s' }}>
+          <rect x="5" y="12" width="85" height="28" rx="4" fill="#f97316"/>
+          <rect x="5" y="12" width="30" height="28" rx="4" fill="#ea580c"/>
+          <rect x="8" y="15" width="20" height="14" rx="2" fill="#bfdbfe" opacity="0.9"/>
+          <rect x="40" y="14" width="45" height="10" rx="1" fill="#fed7aa" opacity="0.6"/>
+          <text x="48" y="30" fontSize="9" fill="white" fontWeight="bold">DELTA</text>
+          <circle cx="22" cy="42" r="7" fill="#1e293b"/><circle cx="22" cy="42" r="4" fill="#64748b"/>
+          <circle cx="74" cy="42" r="7" fill="#1e293b"/><circle cx="74" cy="42" r="4" fill="#64748b"/>
+          <rect x="88" y="14" width="12" height="8" rx="2" fill="#fef08a" opacity="0.8"/>
+        </svg>
+
+        {/* Vehicle 2 — Sedan (white) */}
+        <svg viewBox="0 0 100 45" style={{ position:'absolute', bottom:'10px', height:'26px', animation:'vanRun 12s linear infinite', animationDelay:'-4s' }}>
+          <rect x="5" y="18" width="80" height="20" rx="3" fill="#e2e8f0"/>
+          <path d="M20 18 Q28 8 45 8 Q62 8 70 18Z" fill="#cbd5e1"/>
+          <rect x="22" y="10" width="16" height="10" rx="1" fill="#bfdbfe" opacity="0.85"/>
+          <rect x="44" y="10" width="16" height="10" rx="1" fill="#bfdbfe" opacity="0.85"/>
+          <circle cx="20" cy="40" r="6" fill="#1e293b"/><circle cx="20" cy="40" r="3" fill="#64748b"/>
+          <circle cx="70" cy="40" r="6" fill="#1e293b"/><circle cx="70" cy="40" r="3" fill="#64748b"/>
+          <rect x="82" y="20" width="8" height="5" rx="1" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        {/* Vehicle 3 — SUV (blue) */}
+        <svg viewBox="0 0 110 48" style={{ position:'absolute', bottom:'10px', height:'28px', animation:'vanRun 10s linear infinite', animationDelay:'-7s' }}>
+          <rect x="5" y="14" width="85" height="26" rx="4" fill="#0a2558"/>
+          <path d="M18 14 Q24 5 40 5 Q65 5 72 14Z" fill="#0d3070"/>
+          <rect x="20" y="7" width="18" height="10" rx="1" fill="#bfdbfe" opacity="0.8"/>
+          <rect x="44" y="7" width="18" height="10" rx="1" fill="#bfdbfe" opacity="0.8"/>
+          <circle cx="22" cy="42" r="7" fill="#1e293b"/><circle cx="22" cy="42" r="4" fill="#475569"/>
+          <circle cx="75" cy="42" r="7" fill="#1e293b"/><circle cx="75" cy="42" r="4" fill="#475569"/>
+          <rect x="88" y="16" width="10" height="6" rx="1" fill="#fef08a" opacity="0.9"/>
+          <rect x="5" y="30" width="10" height="4" rx="1" fill="#f87171" opacity="0.8"/>
+        </svg>
+
+        {/* Vehicle 4 — Mini Van (white/orange) */}
+        <svg viewBox="0 0 115 50" style={{ position:'absolute', bottom:'10px', height:'30px', animation:'vanRun 14s linear infinite', animationDelay:'-2s' }}>
+          <rect x="5" y="10" width="90" height="30" rx="5" fill="#f1f5f9"/>
+          <rect x="5" y="10" width="28" height="30" rx="5" fill="#e2e8f0"/>
+          <rect x="8" y="14" width="18" height="13" rx="2" fill="#bfdbfe" opacity="0.9"/>
+          <rect x="36" y="12" width="20" height="12" rx="1" fill="#bfdbfe" opacity="0.8"/>
+          <rect x="60" y="12" width="20" height="12" rx="1" fill="#bfdbfe" opacity="0.8"/>
+          <rect x="0" y="22" width="8" height="6" rx="2" fill="#f97316" opacity="0.9"/>
+          <circle cx="24" cy="43" r="7" fill="#1e293b"/><circle cx="24" cy="43" r="4" fill="#64748b"/>
+          <circle cx="78" cy="43" r="7" fill="#1e293b"/><circle cx="78" cy="43" r="4" fill="#64748b"/>
+          <rect x="93" y="13" width="10" height="7" rx="2" fill="#fef08a" opacity="0.9"/>
+        </svg>
+
+        {/* Vehicle 5 — Pickup Truck (dark) */}
+        <svg viewBox="0 0 120 50" style={{ position:'absolute', bottom:'10px', height:'28px', animation:'vanRun 11s linear infinite', animationDelay:'-10s' }}>
+          <rect x="5" y="18" width="45" height="22" rx="4" fill="#334155"/>
+          <rect x="50" y="22" width="55" height="18" rx="3" fill="#475569"/>
+          <path d="M20 18 Q28 8 42 8 Q50 8 50 18Z" fill="#1e293b"/>
+          <rect x="22" y="10" width="18" height="10" rx="1" fill="#bfdbfe" opacity="0.75"/>
+          <circle cx="22" cy="42" r="7" fill="#0f172a"/><circle cx="22" cy="42" r="4" fill="#64748b"/>
+          <circle cx="90" cy="42" r="7" fill="#0f172a"/><circle cx="90" cy="42" r="4" fill="#64748b"/>
+          <rect x="107" y="20" width="10" height="6" rx="1" fill="#fef08a" opacity="0.9"/>
+          <rect x="5" y="30" width="8" height="4" rx="1" fill="#f87171" opacity="0.8"/>
+        </svg>
       </div>
 
       {/* ── MAIN FOOTER ── */}

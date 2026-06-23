@@ -88,10 +88,10 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Van running across footer */
+/* Vehicles running right to left across footer */
 @keyframes vanRun {
-  0%   { transform: translateX(-120px); }
-  100% { transform: translateX(calc(100vw + 120px)); }
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-200px); }
 }
 
 /* ─────────────────────────────────────────
