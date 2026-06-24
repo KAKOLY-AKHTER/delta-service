@@ -774,6 +774,11 @@ function HistorySection({ bookings, setBookings, uid }) {
   const [ratingModal, setRatingModal] = useState(null)
   const [ratingVal, setRatingVal]     = useState(0)
   const [ratingText, setRatingText]   = useState('')
+
+  useEffect(() => {
+    getBookings(uid).then(b => setBookings(b))
+  }, [uid])
+
   const past = bookings.filter(b => b.status === 'Completed' || b.status === 'Cancelled')
 
   const doRate = async () => {
