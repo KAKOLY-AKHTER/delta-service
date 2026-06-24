@@ -142,13 +142,13 @@ export default function ServicesPage() {
             Don't see the service you need?
           </h2>
           <p className="text-gray-500 mb-6" style={{ fontSize: '15px' }}>Call us — we accommodate many custom transportation requests.</p>
-          <a href="tel:+14703367475"
+          <a href="tel:+12096848359"
             className="inline-flex items-center gap-2 font-black text-white rounded-xl"
             style={{ padding: '14px 28px', fontSize: '13px', background: 'linear-gradient(135deg, #f97316, #ea580c)', boxShadow: '0 8px 24px rgba(249,115,22,0.35)', textDecoration: 'none' }}>
             <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
               <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
             </svg>
-            Call (470) 336-7475
+            Call (209) 684-8359
           </a>
         </div>
       </section>

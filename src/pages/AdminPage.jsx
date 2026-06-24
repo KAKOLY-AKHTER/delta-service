@@ -768,7 +768,7 @@ function AdminBookings({ bookings, setBookings }) {
       Confirmed:     `Great news! Your ${editModal.type || 'ride'} on ${editModal.date} at ${editModal.time} has been confirmed.${editForm.driver ? ` Your driver is ${editForm.driver}.` : ''}`,
       'In Progress': `Your driver is on the way! Your ${editModal.type || 'ride'} on ${editModal.date} is now in progress.`,
       Completed:     `Your ${editModal.type || 'ride'} on ${editModal.date} has been completed. Thank you for choosing Delta Care Transport!`,
-      Cancelled:     `Your ${editModal.type || 'ride'} on ${editModal.date} has been cancelled. Please call us to rebook at (470) 336-7475.`,
+      Cancelled:     `Your ${editModal.type || 'ride'} on ${editModal.date} has been cancelled. Please call us to rebook at (209) 684-8359.`,
       Pending:       `Your ride booking is currently pending confirmation. We will update you shortly.`,
     }
     sendUserEmail(

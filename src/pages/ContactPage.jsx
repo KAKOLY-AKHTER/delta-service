@@ -89,7 +89,7 @@ Booking Summary:
   Pickup:      ${data.pickup}
   Destination: ${data.destination}
 
-For urgent help, call us: (470) 336-7475
+For urgent help, call us: (209) 684-8359
 
 Warm regards,
 Delta Care Transport Team`
@@ -169,11 +169,11 @@ Delta Care Transport Team`
           {[
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z"/></svg>,
-              bg: 'linear-gradient(135deg,#f97316,#ea580c)', title: 'Phone', value: '(470) 336-7475', sub: '24/7 scheduling line', href: 'tel:+14703367475',
+              bg: 'linear-gradient(135deg,#f97316,#ea580c)', title: 'Phone', value: '(209) 684-8359', sub: '24/7 scheduling line', href: 'tel:+12096848359',
             },
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.998 2C6.474 2 2 6.476 2 12.001a9.949 9.949 0 0 0 1.404 5.142L2.003 22l4.978-1.378A9.945 9.945 0 0 0 12 22c5.523 0 10-4.477 10-10S17.521 2 11.998 2zm.002 18.168a8.163 8.163 0 0 1-4.158-1.134l-.298-.177-3.083.854.853-3.07-.194-.315A8.168 8.168 0 0 1 3.835 12C3.835 7.491 7.49 3.836 12 3.836c4.512 0 8.165 3.654 8.165 8.164 0 4.511-3.653 8.168-8.165 8.168z"/></svg>,
-              bg: '#25D366', title: 'WhatsApp', value: 'Message Us', sub: 'Quick replies guaranteed', href: 'https://wa.me/14703367475',
+              bg: '#25D366', title: 'WhatsApp', value: 'Message Us', sub: 'Quick replies guaranteed', href: 'https://wa.me/12096848359',
             },
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>,
@@ -181,7 +181,7 @@ Delta Care Transport Team`
             },
             {
               icon: <svg viewBox="0 0 24 24" fill="white" width="22" height="22"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>,
-              bg: '#0a2558', title: 'Service Area', value: 'Lathrop, CA', sub: '18+ cities covered', href: null,
+              bg: '#0a2558', title: 'Service Area', value: 'Stockton, CA', sub: '820 S Pershing Ave, 95330', href: null,
             },
           ].map((c) => {
             const inner = (

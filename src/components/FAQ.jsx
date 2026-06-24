@@ -150,7 +150,7 @@ export default function FAQ() {
                 </div>
                 <div>
                   <p className="text-blue-200 text-[11px]">Call Us Anytime</p>
-                  <p className="text-white font-black" style={{ fontSize: '14px' }}>(470) 336-7475</p>
+                  <p className="text-white font-black" style={{ fontSize: '14px' }}>(209) 684-8359</p>
                 </div>
               </div>
             </div>

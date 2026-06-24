@@ -85,7 +85,7 @@ export default function Hero() {
             </svg>
             BOOK A RIDE
           </Link>
-          <a href="tel:+14703367475" className="flex items-center gap-2.5 border-2 border-[#0a2558] text-[#0a2558] rounded-md font-bold tracking-widest hover:bg-gray-50 transition-colors"
+          <a href="tel:+12096848359" className="flex items-center gap-2.5 border-2 border-[#0a2558] text-[#0a2558] rounded-md font-bold tracking-widest hover:bg-gray-50 transition-colors"
             style={{ padding: '13px 22px', fontSize: '12px', textDecoration: 'none' }}>
             <svg viewBox="0 0 24 24" fill="#f97316" className="w-4 h-4">
               <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />

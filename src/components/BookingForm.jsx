@@ -26,7 +26,7 @@ const miniStats = [
 const contactInfo = [
   {
     icon: <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="15" height="15"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z"/></svg>,
-    value: '(470) 336-7475', sub: 'Call us anytime, 24/7',
+    value: '(209) 684-8359', sub: 'Call us anytime, 24/7',
   },
   {
     icon: <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="15" height="15"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,

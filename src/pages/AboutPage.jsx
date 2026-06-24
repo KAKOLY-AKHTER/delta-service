@@ -12,7 +12,7 @@ const values = [
 
 const stats = [
   { val: '5+', label: 'Years in Service', desc: 'Proudly operating since 2019' },
-  { val: '10K+', label: 'Rides Completed', desc: 'Across Lathrop, California' },
+  { val: '10K+', label: 'Rides Completed', desc: 'Across Stockton, California' },
   { val: '500+', label: 'Regular Clients', desc: 'Who trust us every week' },
   { val: '4.9★', label: 'Average Rating', desc: 'From verified passengers' },
 ]
@@ -36,7 +36,7 @@ export default function AboutPage() {
               <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.55) 0%, transparent 50%)' }} />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <p className="text-white font-black" style={{ fontSize: '18px' }}>Delta Care Transport</p>
-                <p className="text-blue-200" style={{ fontSize: '13px' }}>Serving Lathrop, California — Since 2019</p>
+                <p className="text-blue-200" style={{ fontSize: '13px' }}>Serving Stockton, California — Since 2019</p>
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@ export default function AboutPage() {
               Delta Care Transport was founded with one mission: ensure that no one misses an important appointment or life event due to a lack of reliable transportation. We specialize in non-medical transportation — providing safe, punctual, and compassionate rides to medical appointments, dialysis centers, therapy sessions, airports, and more.
             </p>
             <p className="text-gray-600 leading-relaxed mb-6" style={{ fontSize: '15.5px' }}>
-              Based in Lathrop, California, Georgia, we proudly serve seniors, individuals with disabilities, and anyone who needs dependable transportation. Our drivers are more than just drivers — they are trained, caring professionals who treat every passenger with dignity and respect.
+              Based in Stockton, California, we proudly serve seniors, individuals with disabilities, and anyone who needs dependable transportation. Our drivers are more than just drivers — they are trained, caring professionals who treat every passenger with dignity and respect.
             </p>
             <div style={{ borderTop: '2px solid #f0f4fb', paddingTop: '24px' }}>
               <p className="font-semibold text-[#0a2558] mb-3" style={{ fontSize: '13.5px' }}>What sets us apart:</p>

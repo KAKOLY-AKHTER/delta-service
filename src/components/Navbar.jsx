@@ -102,7 +102,7 @@ export default function Navbar() {
           <div className="ml-auto hidden lg:flex items-center gap-4">
 
             {/* Phone */}
-            <a href="tel:+14703367475" className="flex items-center gap-2.5" style={{ textDecoration: 'none' }}>
+            <a href="tel:+12096848359" className="flex items-center gap-2.5" style={{ textDecoration: 'none' }}>
               <div className="bg-orange-500 rounded-full p-2 text-white shrink-0">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
                   <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
@@ -110,7 +110,7 @@ export default function Navbar() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 leading-tight">24/7 Support</p>
-                <p className="font-bold text-gray-900 leading-tight" style={{ fontSize: '15px' }}>(470) 336-7475</p>
+                <p className="font-bold text-gray-900 leading-tight" style={{ fontSize: '15px' }}>(209) 684-8359</p>
               </div>
             </a>
 
@@ -254,7 +254,7 @@ export default function Navbar() {
                   <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
                 </svg>
               </div>
-              <p className="font-bold text-gray-900 text-sm">(470) 336-7475</p>
+              <p className="font-bold text-gray-900 text-sm">(209) 684-8359</p>
             </li>
 
             {user ? (

@@ -154,9 +154,9 @@ export default function TermsOfServicePage() {
                   Our team is available 24/7 to answer any questions you have about our terms, services, or policies.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a href="tel:+14703367475"
+                  <a href="tel:+12096848359"
                     style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', color: 'white', fontWeight: 800, fontSize: '13.5px', padding: '13px 28px', borderRadius: '12px', textDecoration: 'none', boxShadow: '0 6px 20px rgba(249,115,22,0.4)' }}>
-                    Call (470) 336-7475
+                    Call (209) 684-8359
                   </a>
                   <Link to="/contact"
                     style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 700, fontSize: '13.5px', padding: '13px 28px', borderRadius: '12px', textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.2)' }}>

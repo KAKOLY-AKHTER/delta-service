@@ -207,9 +207,9 @@ export default function NonMedicalTransportPage() {
                   style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', color: 'white', fontWeight: 800, fontSize: '14px', padding: '14px 32px', borderRadius: '12px', textDecoration: 'none', boxShadow: '0 8px 24px rgba(249,115,22,0.45)', letterSpacing: '0.04em' }}>
                   BOOK A RIDE
                 </Link>
-                <a href="tel:+14703367475"
+                <a href="tel:+12096848359"
                   style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 700, fontSize: '14px', padding: '14px 32px', borderRadius: '12px', textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.2)' }}>
-                  Call (470) 336-7475
+                  Call (209) 684-8359
                 </a>
               </div>
             </div>

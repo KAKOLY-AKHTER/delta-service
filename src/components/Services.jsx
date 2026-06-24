@@ -298,7 +298,7 @@ export default function Services() {
         <div className="flex gap-3 shrink-0">
           <Link to="/contact" className="bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-colors tracking-widest"
             style={{ padding: '12px 24px', fontSize: '12px', textDecoration: 'none' }}>BOOK A RIDE</Link>
-          <a href="tel:+14703367475" className="font-bold rounded-xl tracking-widest"
+          <a href="tel:+12096848359" className="font-bold rounded-xl tracking-widest"
             style={{ padding: '12px 24px', fontSize: '12px', border: '1px solid rgba(255,255,255,0.25)', color: 'white', textDecoration: 'none' }}>CALL NOW</a>
         </div>
       </div>

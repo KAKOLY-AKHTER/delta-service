@@ -905,7 +905,7 @@ function HistorySection({ bookings, setBookings, uid }) {
   }
 
   const downloadReceipt = (b) => {
-    const text = `DELTA CARE TRANSPORT — RECEIPT\n${'─'.repeat(36)}\nBooking ID : ${b.id}\nDate       : ${b.date} at ${b.time}\nPickup     : ${b.from}\nDrop-off   : ${b.to}\nService    : ${b.type}\nDriver     : ${b.driver}\nStatus     : ${b.status}\n${'─'.repeat(36)}\nThank you for choosing Delta Care Transport!\n(470) 336-7475`
+    const text = `DELTA CARE TRANSPORT — RECEIPT\n${'─'.repeat(36)}\nBooking ID : ${b.id}\nDate       : ${b.date} at ${b.time}\nPickup     : ${b.from}\nDrop-off   : ${b.to}\nService    : ${b.type}\nDriver     : ${b.driver}\nStatus     : ${b.status}\n${'─'.repeat(36)}\nThank you for choosing Delta Care Transport!\n(209) 684-8359`
     const blob = new Blob([text], { type:'text/plain' })
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
@@ -1089,7 +1089,7 @@ function PaymentsSection({ payments }) {
       `Status      : ${p.status || '—'}`,
       '─'.repeat(40),
       'Delta Care Transport',
-      'Phone: (470) 336-7475',
+      'Phone: (209) 684-8359',
       'Email: info@dmctransport.us',
       'Thank you for choosing Delta Care Transport!',
     ].join('\n')
@@ -1436,8 +1436,8 @@ function SupportSection({ user }) {
       {/* Contact cards */}
       <div className="grid sm:grid-cols-3 gap-4 mb-7">
         {[
-          { icon:'📞', label:'Call Us',     val:'(470) 336-7475', href:'tel:+14703367475', color:'#0a2558', bg:'#e8eef8', accent:'#0a2558' },
-          { icon:'💬', label:'WhatsApp',    val:'Chat Now',        href:'https://wa.me/14703367475', color:'#15803d', bg:'#dcfce7', accent:'#22c55e' },
+          { icon:'📞', label:'Call Us',     val:'(209) 684-8359', href:'tel:+12096848359', color:'#0a2558', bg:'#e8eef8', accent:'#0a2558' },
+          { icon:'💬', label:'WhatsApp',    val:'Chat Now',        href:'https://wa.me/12096848359', color:'#15803d', bg:'#dcfce7', accent:'#22c55e' },
           { icon:'✉️', label:'Email',       val:'Send Email',      href:'mailto:info@dmctransport.us', color:'#1d4ed8', bg:'#dbeafe', accent:'#3b82f6' },
         ].map(c => (
           <a key={c.label} href={c.href} target="_blank" rel="noreferrer"
@@ -1621,7 +1621,7 @@ function ServiceAreaSection() {
               <p className="text-gray-500 mb-4" style={{ fontSize:'13px', lineHeight:1.5 }}>
                 We may still be able to help. Contact us and we'll check availability for your location.
               </p>
-              <a href="tel:+14703367475"
+              <a href="tel:+12096848359"
                 className="flex items-center justify-center gap-2 font-bold text-white rounded-xl py-2.5 w-full no-underline"
                 style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', fontSize:'13.5px', textDecoration:'none' }}>
                 <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">

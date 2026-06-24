@@ -3,7 +3,7 @@ import { useState } from 'react'
 const contacts = [
   {
     label: 'WhatsApp',
-    href: 'https://wa.me/14703367475',
+    href: 'https://wa.me/12096848359',
     bg: '#25D366',
     shadow: 'rgba(37,211,102,0.45)',
     icon: (
@@ -15,7 +15,7 @@ const contacts = [
   },
   {
     label: 'Call',
-    href: 'tel:+14703367475',
+    href: 'tel:+12096848359',
     bg: '#0a2558',
     shadow: 'rgba(10,37,88,0.40)',
     icon: (

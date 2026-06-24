@@ -27,7 +27,7 @@ const contactItems = [
         <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.45 2.33.7 3.58.7a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.25 2.46.7 3.57a1 1 0 0 1-.23 1.01l-2.35 2.21z" />
       </svg>
     ),
-    label: 'Phone', value: '(470) 336-7475',
+    label: 'Phone', value: '(209) 684-8359',
   },
   {
     icon: (
@@ -54,7 +54,7 @@ const contactItems = [
         <circle cx="12" cy="10" r="3" />
       </svg>
     ),
-    label: 'Location', value: 'Lathrop, California',
+    label: 'Location', value: '820 S Pershing Ave, Stockton, CA 95330',
   },
 ]
 
@@ -166,7 +166,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Call us 24/7</p>
-                    <p style={{ color: 'white', fontWeight: 800, fontSize: '16px', lineHeight: 1.2 }}>(470) 336-7475</p>
+                    <p style={{ color: 'white', fontWeight: 800, fontSize: '16px', lineHeight: 1.2 }}>(209) 684-8359</p>
                   </div>
                 </div>
               </div>

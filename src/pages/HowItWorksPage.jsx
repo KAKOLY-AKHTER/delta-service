@@ -8,7 +8,7 @@ const steps = [
     title: 'Choose How to Book',
     desc: 'Reach us the way that works best for you — call our 24/7 line, send a WhatsApp message, or fill out the online booking form. All three methods are quick and easy.',
     sub: [
-      { label: 'Phone', val: '(470) 336-7475 — available 24/7' },
+      { label: 'Phone', val: '(209) 684-8359 — available 24/7' },
       { label: 'WhatsApp', val: 'Message us anytime for a fast reply' },
       { label: 'Online Form', val: 'Takes less than 2 minutes to complete' },
     ],
@@ -162,9 +162,9 @@ export default function HowItWorksPage() {
                 style={{ padding: '12px 22px', fontSize: '13px', background: 'linear-gradient(135deg,#f97316,#ea580c)', textDecoration: 'none', boxShadow: '0 6px 18px rgba(249,115,22,0.32)' }}>
                 Book a Ride Online
               </Link>
-              <a href="tel:+14703367475" className="inline-flex items-center gap-2 font-bold rounded-xl"
+              <a href="tel:+12096848359" className="inline-flex items-center gap-2 font-bold rounded-xl"
                 style={{ padding: '12px 22px', fontSize: '13px', background: '#fff', color: '#0a2558', border: '1.5px solid #dce8f8', textDecoration: 'none' }}>
-                Call (470) 336-7475
+                Call (209) 684-8359
               </a>
             </div>
           </div>

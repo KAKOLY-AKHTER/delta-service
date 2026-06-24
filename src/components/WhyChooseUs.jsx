@@ -201,7 +201,7 @@ export default function WhyChooseUs() {
             style={{ padding: '12px 22px', fontSize: '13px', textDecoration: 'none' }}>
             BOOK A RIDE
           </Link>
-          <a href="tel:+14703367475" className="font-bold rounded-xl tracking-widest transition-colors"
+          <a href="tel:+12096848359" className="font-bold rounded-xl tracking-widest transition-colors"
             style={{ padding: '12px 22px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', color: 'white', textDecoration: 'none' }}>
             CALL NOW
           </a>
