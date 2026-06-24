@@ -5,7 +5,6 @@ import WhyChooseUs from '../components/WhyChooseUs'
 import Services from '../components/Services'
 import HowItWorks from '../components/HowItWorks'
 import Fleet from '../components/Fleet'
-import ServiceArea from '../components/ServiceArea'
 import BookingForm from '../components/BookingForm'
 import FAQ from '../components/FAQ'
 import Testimonials from '../components/Testimonials'
@@ -20,7 +19,6 @@ export default function HomePage() {
       <Services />
       <HowItWorks />
       <Fleet />
-      <ServiceArea />
       <BookingForm />
       <FAQ />
       <Testimonials />

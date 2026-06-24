@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import PageBanner from '../components/PageBanner'
 import useInView from '../hooks/useInView'
-import { submitContactRequest } from '../services/firestoreService'
+import { submitContactRequest, addBooking } from '../services/firestoreService'
+import { auth } from '../firebase'
 
 
 const serviceTypes = ['Medical Appointments', 'Dialysis Transportation', 'Airport Transfers', 'Rehabilitation Center', 'Family & Social Visits', 'Shopping & Errands', 'Other']
@@ -35,20 +36,32 @@ export default function ContactPage() {
     setLoading(true)
     setError('')
     const fd = new FormData(e.target)
+    const bookingData = {
+      name:        fd.get('name'),
+      phone:       fd.get('phone'),
+      email:       fd.get('email'),
+      pickup:      fd.get('pickup'),
+      destination: fd.get('destination'),
+      serviceType: fd.get('serviceType'),
+      date:        fd.get('date'),
+      time:        fd.get('time'),
+      passengers:  fd.get('passengers'),
+      specialReqs: fd.get('specialReqs'),
+      notes:       fd.get('notes'),
+    }
     try {
-      await submitContactRequest({
-        name:        fd.get('name'),
-        phone:       fd.get('phone'),
-        email:       fd.get('email'),
-        pickup:      fd.get('pickup'),
-        destination: fd.get('destination'),
-        serviceType: fd.get('serviceType'),
-        date:        fd.get('date'),
-        time:        fd.get('time'),
-        passengers:  fd.get('passengers'),
-        specialReqs: fd.get('specialReqs'),
-        notes:       fd.get('notes'),
-      })
+      await submitContactRequest(bookingData)
+      const user = auth.currentUser
+      if (user) {
+        await addBooking(user.uid, {
+          ...bookingData,
+          from:   bookingData.pickup,
+          to:     bookingData.destination,
+          type:   bookingData.serviceType,
+          status: 'Pending',
+          rating: null,
+        })
+      }
       setSent(true)
     } catch {
       setError('Something went wrong. Please try again or call us directly.')

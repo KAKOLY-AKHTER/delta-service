@@ -82,9 +82,9 @@ export default function FleetPage() {
               <div className="flex flex-col lg:flex-row">
 
                 {/* Image */}
-                <div className="relative lg:w-2/5 shrink-0 overflow-hidden" style={{ minHeight: '300px', background: '#f8faff' }}>
-                  <img src={v.img} alt={v.name} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.4) 0%, transparent 55%)' }} />
+                <div className="relative lg:w-2/5 shrink-0 overflow-hidden" style={{ minHeight: '300px', background: '#eef2f9' }}>
+                  <img src={v.img} alt={v.name} style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', position: 'absolute', inset: 0, padding: '16px 16px 60px' }} />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,37,88,0.55) 0%, transparent 45%)' }} />
                   <div className="absolute top-5 left-5 rounded-full font-black tracking-widest"
                     style={{ background: v.badgeColor, color: 'white', padding: '5px 14px', fontSize: '9.5px', letterSpacing: '0.08em' }}>
                     {v.badge}

@@ -89,19 +89,15 @@ export default function Fleet() {
               {/* Image area */}
               <div
                 className="relative overflow-hidden"
-                style={{
-                  height: '240px',
-                  background: v.highlight ? '#f0f6ff' : '#f8faff',
-                }}
+                style={{ background: v.highlight ? '#f0f6ff' : '#f8faff' }}
               >
                 <img
                   src={v.img}
                   alt={v.name}
                   style={{
                     width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center',
+                    height: 'auto',
+                    display: 'block',
                     transition: 'transform 0.4s ease',
                   }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}

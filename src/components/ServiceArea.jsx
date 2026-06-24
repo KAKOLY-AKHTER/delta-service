@@ -159,6 +159,51 @@ export default function ServiceArea() {
                 <strong>Don't see your city?</strong> Call us at <strong>(470) 336-7475</strong> — we may still be able to help!
               </p>
             </div>
+
+            {/* Service highlights */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+              {[
+                {
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" width="22" height="22">
+                      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                  ),
+                  title: 'Same-Day Booking',
+                  desc: 'Schedule rides anytime, 24/7',
+                },
+                {
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" width="22" height="22">
+                      <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                  ),
+                  title: 'Real-Time Tracking',
+                  desc: 'Know exactly when we arrive',
+                },
+                {
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" width="22" height="22">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  ),
+                  title: 'Licensed & Insured',
+                  desc: 'Fully compliant, every ride',
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl p-4 flex flex-col gap-2"
+                  style={{ background: 'white', border: '1.5px solid #e8eef8', boxShadow: '0 4px 14px rgba(10,37,88,0.06)' }}
+                >
+                  <div className="flex items-center justify-center rounded-xl" style={{ width: '44px', height: '44px', background: '#fff4ec' }}>
+                    {item.icon}
+                  </div>
+                  <p className="font-black text-[#0a2558]" style={{ fontSize: '13.5px' }}>{item.title}</p>
+                  <p className="text-gray-400" style={{ fontSize: '12px' }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Right: feature cards */}

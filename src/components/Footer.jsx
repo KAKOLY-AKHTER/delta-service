@@ -182,9 +182,9 @@ export default function Footer() {
               style={{ objectFit: 'cover', objectPosition: 'center' }}
             />
             {/* Left-to-right gradient overlay to blend with left panel */}
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #0a2558 0%, rgba(10,37,88,0.55) 35%, rgba(10,37,88,0.1) 100%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #0a2558 0%, rgba(10,37,88,0.3) 25%, transparent 60%)' }} />
             {/* Dark bottom overlay */}
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,26,62,0.7) 0%, transparent 60%)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,26,62,0.35) 0%, transparent 50%)' }} />
 
             {/* Floating stat cards */}
             <div className="absolute bottom-10 right-8 flex flex-col gap-3">
