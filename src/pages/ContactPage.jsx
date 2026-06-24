@@ -88,8 +88,7 @@ export default function ContactPage() {
           // silently fail
         }
       }
-      setToast(true)
-      setFormKey(k => k + 1)
+      setSent(true)
     } catch {
       setError('Something went wrong. Please try again or call us directly.')
     } finally {
@@ -99,30 +98,6 @@ export default function ContactPage() {
 
   return (
     <>
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: 'fixed', bottom: '28px', right: '24px', zIndex: 9999,
-          background: 'linear-gradient(135deg, #0a2558, #0d3070)',
-          color: 'white', borderRadius: '16px', padding: '16px 22px',
-          boxShadow: '0 12px 40px rgba(10,37,88,0.35)',
-          display: 'flex', alignItems: 'center', gap: '14px',
-          animation: 'fadeSlideUp 0.35s ease',
-          minWidth: '300px',
-        }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg,#f97316,#ea580c)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <div>
-            <p style={{ fontWeight: 800, fontSize: '14px', marginBottom: '2px' }}>Request Submitted!</p>
-            <p style={{ fontSize: '12px', opacity: 0.75 }}>We'll confirm your ride shortly.</p>
-          </div>
-          <button onClick={() => setToast(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', marginLeft: 'auto', padding: '4px' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-      )}
-
       <PageBanner title="Contact Us" subtitle="Ready to book or have a question? We're here around the clock — reach out anytime." />
 
       {/* Contact info row */}
@@ -196,7 +171,19 @@ export default function ContactPage() {
           {/* Form */}
           <div className={`flex-1 anim-fade-up ${inView ? 'anim-in' : ''}`} style={{ transitionDelay: '0.12s' }}>
             <div className="rounded-3xl p-7 lg:p-9" style={{ border: '1.5px solid #e8eef8', boxShadow: '0 8px 32px rgba(10,37,88,0.06)' }}>
-              <form key={formKey} onSubmit={handleSubmit} className="flex flex-col gap-5">
+              {sent ? (
+                <div className="flex flex-col items-center justify-center text-center py-12">
+                  <div className="flex items-center justify-center rounded-full mb-5"
+                    style={{ width: '68px', height: '68px', background: 'linear-gradient(135deg,#f97316,#ea580c)' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="30" height="30"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <h3 className="font-black text-[#0a2558] mb-2" style={{ fontSize: '22px' }}>Request Sent!</h3>
+                  <p className="text-gray-500" style={{ fontSize: '14.5px', maxWidth: '320px' }}>
+                    Thank you! Our team will review your request and call to confirm your ride shortly.
+                  </p>
+                </div>
+              ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <Field label="Full Name" required>
                       <input name="name" required style={inputCls} placeholder="Your full name"
@@ -303,6 +290,7 @@ export default function ContactPage() {
                     🔒 Your information is private and will never be shared with third parties.
                   </p>
                 </form>
+              )}
             </div>
           </div>
         </div>
