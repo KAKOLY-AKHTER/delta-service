@@ -7,7 +7,7 @@ import {
   getProfile,
   getAllBookings, getAllUsers, getAllTickets,
   updateTicketStatus, adminUpdateBooking, adminAddPayment,
-  getAllContactRequests, updateContactRequestStatus,
+  getAllContactRequests, updateContactRequestStatus, addNotification,
 } from '../services/firestoreService'
 
 /* ── Constants ── */
@@ -740,6 +740,14 @@ function AdminBookings({ bookings, setBookings }) {
     setSaving(true)
     await adminUpdateBooking(editModal.uid, editModal.id, editForm)
     setBookings(prev => prev.map(b => b.id === editModal.id ? { ...b, ...editForm } : b))
+    try {
+      const statusIcons = { Confirmed: '✅', 'In Progress': '🚐', Completed: '🎉', Cancelled: '❌', Pending: '⏳' }
+      await addNotification(editModal.uid, {
+        icon: statusIcons[editForm.status] || '📋',
+        title: `Booking ${editForm.status}`,
+        msg: `Your ride booking status has been updated to "${editForm.status}".${editForm.driver ? ` Driver: ${editForm.driver}.` : ''}`,
+      })
+    } catch {}
     setSaving(false); setEditModal(null)
   }
 
@@ -1200,11 +1208,18 @@ function AdminPayments({ users }) {
     setSaving(true); setError('')
     try {
       const invoiceId = form.invoiceId || `INV-${new Date().getFullYear()}-${String(Math.floor(Math.random()*9000)+1000)}`
+      const amount = form.amount.startsWith('$') ? form.amount : `$${form.amount}`
       await adminAddPayment(form.selectedUid, {
         invoiceId,
-        amount: form.amount.startsWith('$') ? form.amount : `$${form.amount}`,
-        desc: form.desc, date: form.date, method: form.method, status: form.status, userName: form.selectedName,
+        amount, desc: form.desc, date: form.date, method: form.method, status: form.status, userName: form.selectedName,
       })
+      try {
+        await addNotification(form.selectedUid, {
+          icon: '💳',
+          title: 'Payment Record Added',
+          msg: `A payment of ${amount} has been recorded (${form.status}) via ${form.method}. Invoice: ${invoiceId}.`,
+        })
+      } catch {}
       setDone(true)
     } catch { setError('Failed to add payment. Please try again.') }
     finally { setSaving(false) }

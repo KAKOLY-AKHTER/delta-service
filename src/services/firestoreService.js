@@ -71,6 +71,9 @@ export const getNotifications = async (uid) => {
 export const markNotifRead = (uid, id) =>
   updateDoc(userDoc(uid, 'notifications', id), { read: true })
 
+export const addNotification = (uid, { icon, title, msg }) =>
+  addDoc(userCol(uid, 'notifications'), { icon, title, msg, read: false, createdAt: serverTimestamp() })
+
 export const markAllNotifsRead = async (uid) => {
   const snap = await getDocs(userCol(uid, 'notifications'))
   const promises = snap.docs.filter(d => !d.data().read).map(d =>
