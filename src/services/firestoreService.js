@@ -32,8 +32,8 @@ export const updateBooking = (uid, id, data) =>
 export const cancelBooking = (uid, id) =>
   updateDoc(userDoc(uid, 'bookings', id), { status: 'Cancelled' })
 
-export const rateBooking = (uid, id, rating) =>
-  updateDoc(userDoc(uid, 'bookings', id), { rating })
+export const rateBooking = (uid, id, rating, ratingText) =>
+  updateDoc(userDoc(uid, 'bookings', id), { rating, ...(ratingText ? { ratingText } : {}) })
 
 /* ── FAMILY MEMBERS ── */
 export const getFamily = async (uid) => {
@@ -80,6 +80,14 @@ export const markAllNotifsRead = async (uid) => {
     updateDoc(d.ref, { read: true })
   )
   return Promise.all(promises)
+}
+
+export const deleteNotif = (uid, id) =>
+  deleteDoc(userDoc(uid, 'notifications', id))
+
+export const deleteAllNotifs = async (uid) => {
+  const snap = await getDocs(userCol(uid, 'notifications'))
+  return Promise.all(snap.docs.map(d => deleteDoc(d.ref)))
 }
 
 export const seedNotifications = async (uid) => {

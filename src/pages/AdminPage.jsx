@@ -1,14 +1,35 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../assets/logo.png'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import { auth } from '../firebase'
+import emailjs from '@emailjs/browser'
 import {
-  getProfile,
   getAllBookings, getAllUsers, getAllTickets,
   updateTicketStatus, adminUpdateBooking, adminAddPayment,
   getAllContactRequests, updateContactRequestStatus, addNotification,
 } from '../services/firestoreService'
+
+/* ── EmailJS helper ── */
+const EJS_SERVICE  = 'service_j8h9vok'
+const EJS_TEMPLATE = 'template_k6pk0ux'
+const EJS_KEY      = 'B8ny8gwXCigFq_Sa7'
+
+const sendUserEmail = (to, subject, params) => {
+  if (!to) return Promise.resolve()
+  return emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
+    to_email:     to,
+    subject:      subject,
+    to_name:      params.to_name     || 'Customer',
+    message:      params.message     || '',
+    booking_id:   params.booking_id  || '—',
+    service_type: params.service_type|| '—',
+    from_loc:     params.from_loc    || '—',
+    to_loc:       params.to_loc      || '—',
+    date:         params.date        || '—',
+    time:         params.time        || '—',
+  }, EJS_KEY).catch(() => {})
+}
 
 /* ── Constants ── */
 const STATUS_OPTS = ['Pending','Confirmed','In Progress','Completed','Cancelled']
@@ -351,20 +372,14 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!pinPassed) return
-    const unsub = onAuthStateChanged(auth, async u => {
-      if (!u) { navigate('/login?redirect=/admin'); return }
-      const profile = await getProfile(u.uid)
-      const allowedEmail = import.meta.env.VITE_ADMIN_EMAIL
-      const emailOk = !allowedEmail || u.email === allowedEmail
-      if (profile.role !== 'admin' || !emailOk) { setIsAdmin(false); return }
-      setUser(u); setIsAdmin(true)
+    setIsAdmin(true)
+    ;(async () => {
       try {
         const [b, us, t, cr] = await Promise.all([getAllBookings(), getAllUsers(), getAllTickets(), getAllContactRequests()])
         setBookings(b); setUsers(us); setTickets(t); setContacts(cr)
       } catch (e) { console.error('Admin load error:', e) }
       finally { setDataLoading(false) }
-    })
-    return unsub
+    })()
   }, [pinPassed])
 
   if (!pinPassed) return <PinGate onPass={() => setPinPassed(true)} />
@@ -748,6 +763,28 @@ function AdminBookings({ bookings, setBookings }) {
         msg: `Your ride booking status has been updated to "${editForm.status}".${editForm.driver ? ` Driver: ${editForm.driver}.` : ''}`,
       })
     } catch {}
+    const userEmail = editModal.email || editModal.userEmail
+    const statusLines = {
+      Confirmed:     `Great news! Your ${editModal.type || 'ride'} on ${editModal.date} at ${editModal.time} has been confirmed.${editForm.driver ? ` Your driver is ${editForm.driver}.` : ''}`,
+      'In Progress': `Your driver is on the way! Your ${editModal.type || 'ride'} on ${editModal.date} is now in progress.`,
+      Completed:     `Your ${editModal.type || 'ride'} on ${editModal.date} has been completed. Thank you for choosing Delta Care Transport!`,
+      Cancelled:     `Your ${editModal.type || 'ride'} on ${editModal.date} has been cancelled. Please call us to rebook at (470) 336-7475.`,
+      Pending:       `Your ride booking is currently pending confirmation. We will update you shortly.`,
+    }
+    sendUserEmail(
+      userEmail,
+      `Booking ${editForm.status} — Delta Care Transport`,
+      {
+        to_name:      editModal.userName || editModal.name || 'Customer',
+        message:      statusLines[editForm.status] || `Your booking status has been updated to "${editForm.status}".`,
+        booking_id:   editModal.invoiceId || editModal.id,
+        service_type: editModal.type || '—',
+        from_loc:     editModal.from || '—',
+        to_loc:       editModal.to   || '—',
+        date:         editModal.date || '—',
+        time:         editModal.time || '—',
+      }
+    )
     setSaving(false); setEditModal(null)
   }
 
@@ -906,7 +943,7 @@ function AdminUsers({ users }) {
       </div>
 
       <Table
-        headers={['User','Email','Loyalty Tier','Points','Referral Code','UID']}
+        headers={['User','Email','Points']}
         empty={filtered.length === 0 ? <EmptyState emoji="👥" label="No users found" /> : null}>
         {filtered.map((u, i) => (
           <tr key={u.id} style={{ borderBottom: i < filtered.length-1 ? '1px solid #f8fafc' : 'none', transition:'background 0.12s' }}
@@ -923,22 +960,8 @@ function AdminUsers({ users }) {
             </td>
             <td style={{ padding:'13px 16px', fontSize:'12.5px', color:'#374151' }}>{u.email || '—'}</td>
             <td style={{ padding:'13px 16px' }}>
-              <span className="px-2.5 py-1 rounded-full font-bold"
-                style={{ fontSize:'11px', background: TIER_BG[u.loyaltyTier] || '#f8fafc', color: TIER[u.loyaltyTier] || '#94a3b8' }}>
-                {u.loyaltyTier || 'Bronze'}
-              </span>
-            </td>
-            <td style={{ padding:'13px 16px' }}>
               <span className="font-black" style={{ fontSize:'14px', color:'#0a2558' }}>{(u.loyaltyPoints||0).toLocaleString()}</span>
               <span style={{ fontSize:'11px', color:'#94a3b8', marginLeft:'3px' }}>pts</span>
-            </td>
-            <td style={{ padding:'13px 16px' }}>
-              <code style={{ fontSize:'11.5px', color:'#64748b', background:'#f8fafc', padding:'3px 8px', borderRadius:'6px', border:'1px solid #e2e8f0' }}>
-                {u.referralCode || '—'}
-              </code>
-            </td>
-            <td style={{ padding:'13px 16px' }}>
-              <code style={{ fontSize:'10.5px', color:'#cbd5e1' }}>{u.id.slice(0,12)}…</code>
             </td>
           </tr>
         ))}
@@ -1220,6 +1243,21 @@ function AdminPayments({ users }) {
           msg: `A payment of ${amount} has been recorded (${form.status}) via ${form.method}. Invoice: ${invoiceId}.`,
         })
       } catch {}
+      const selectedUser = users.find(u => u.id === form.selectedUid)
+      sendUserEmail(
+        selectedUser?.email,
+        `Payment Record Added — Delta Care Transport`,
+        {
+          to_name:      form.selectedName || 'Customer',
+          message:      `A payment of ${amount} has been recorded on your account.\n\nPayment Details:\n  Amount: ${amount}\n  Description: ${form.desc}\n  Date: ${form.date}\n  Method: ${form.method}\n  Status: ${form.status}`,
+          booking_id:   invoiceId,
+          service_type: form.desc || '—',
+          from_loc:     '—',
+          to_loc:       '—',
+          date:         form.date || '—',
+          time:         '—',
+        }
+      )
       setDone(true)
     } catch { setError('Failed to add payment. Please try again.') }
     finally { setSaving(false) }

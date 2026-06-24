@@ -48,6 +48,68 @@ export default function ContactPage() {
     return () => clearTimeout(t)
   }, [toast])
 
+  const sendEmails = async (data) => {
+    const key = 'c15d63e8-4586-448e-9ba5-a49985846973'
+    const adminMsg = `New Ride Request — Delta Care Transport
+
+Name:        ${data.name}
+Phone:       ${data.phone}
+Email:       ${data.email || 'Not provided'}
+Service:     ${data.serviceType}
+Date:        ${data.date}
+Time:        ${data.time}
+Pickup:      ${data.pickup}
+Destination: ${data.destination}
+Passengers:  ${data.passengers}
+Special Req: ${data.specialReqs || 'None'}
+Notes:       ${data.notes || 'None'}`
+
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: key,
+        name:       data.name,
+        email:      data.email || 'noreply@dmctransport.us',
+        replyto:    data.email || 'noreply@dmctransport.us',
+        subject:    `New Ride Request — ${data.serviceType} on ${data.date}`,
+        message:    adminMsg,
+      }),
+    })
+
+    if (data.email) {
+      const userMsg = `Hi ${data.name},
+
+Thank you for choosing Delta Care Transport! We've received your ride request and our team will call you shortly to confirm.
+
+Booking Summary:
+  Service:     ${data.serviceType}
+  Date:        ${data.date}
+  Time:        ${data.time}
+  Pickup:      ${data.pickup}
+  Destination: ${data.destination}
+
+For urgent help, call us: (470) 336-7475
+
+Warm regards,
+Delta Care Transport Team`
+
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          name:       'Delta Care Transport',
+          email:      'info@dmctransport.us',
+          to:         data.email,
+          replyto:    'info@dmctransport.us',
+          subject:    'Booking Received — Delta Care Transport',
+          message:    userMsg,
+        }),
+      })
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -88,6 +150,7 @@ export default function ContactPage() {
           // silently fail
         }
       }
+      sendEmails(bookingData).catch(() => {})
       setSent(true)
     } catch {
       setError('Something went wrong. Please try again or call us directly.')

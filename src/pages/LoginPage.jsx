@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth'
 import { auth, googleProvider } from '../firebase'
 import logo from '../assets/logo.png'
 
@@ -13,6 +13,23 @@ export default function LoginPage() {
   const [gLoading, setGLoading] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({ email: '', password: '' })
+  const [resetSent, setResetSent] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
+
+  const handleForgotPassword = async () => {
+    const email = form.email.trim()
+    if (!email) { setError('Please enter your email address first, then click Forgot password.'); return }
+    setResetLoading(true)
+    setError('')
+    try {
+      await sendPasswordResetEmail(auth, email)
+      setResetSent(true)
+    } catch (err) {
+      setError(friendlyError(err.code))
+    } finally {
+      setResetLoading(false)
+    }
+  }
 
   const handleChange = (e) => {
     setError('')
@@ -119,6 +136,19 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
+            {/* Reset success */}
+            {resetSent && (
+              <div className="flex items-center gap-2 rounded-xl px-4 py-3"
+                style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="16" height="16">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <p className="font-medium" style={{ fontSize: '13px', color: '#15803d' }}>
+                  Password reset email sent! Check your inbox.
+                </p>
+              </div>
+            )}
+
             {/* Error */}
             {error && (
               <div className="flex items-center gap-2 rounded-xl px-4 py-3"
@@ -156,7 +186,10 @@ export default function LoginPage() {
                 <label className="font-semibold text-[#0a2558]" style={{ fontSize: '13px' }}>
                   Password <span style={{ color: '#f97316' }}>*</span>
                 </label>
-                <Link to="#" style={{ fontSize: '12.5px', color: '#f97316', fontWeight: 600, textDecoration: 'none' }}>Forgot password?</Link>
+                <button type="button" onClick={handleForgotPassword} disabled={resetLoading}
+                  style={{ fontSize: '12.5px', color: '#f97316', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                  {resetLoading ? 'Sending…' : 'Forgot password?'}
+                </button>
               </div>
               <div className="relative">
                 <span className="absolute flex items-center pointer-events-none" style={{ left: '13px', top: '50%', transform: 'translateY(-50%)' }}>

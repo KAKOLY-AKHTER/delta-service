@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { onAuthStateChanged, signOut, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth'
-import { auth } from '../firebase'
+import { onAuthStateChanged, signOut, updateProfile, updatePassword, updateEmail, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { auth, storage } from '../firebase'
 import {
   getBookings, addBooking, updateBooking, cancelBooking, rateBooking,
-  getNotifications, markNotifRead, markAllNotifsRead, seedNotifications,
+  getNotifications, markNotifRead, markAllNotifsRead, seedNotifications, addNotification, deleteNotif, deleteAllNotifs,
   saveProfile, getProfile,
   getSettings, saveSettings,
   getPayments, addTicket,
@@ -14,10 +15,11 @@ import logo from '../assets/logo.png'
 
 
 const STATUS_STYLE = {
-  Confirmed: { bg:'#dcfce7', color:'#15803d', dot:'#22c55e' },
-  Pending:   { bg:'#fef9c3', color:'#a16207', dot:'#eab308' },
-  Completed: { bg:'#dbeafe', color:'#1d4ed8', dot:'#3b82f6' },
-  Cancelled: { bg:'#fee2e2', color:'#b91c1c', dot:'#ef4444' },
+  Confirmed:   { bg:'#dcfce7', color:'#15803d', dot:'#22c55e' },
+  Pending:     { bg:'#fef9c3', color:'#a16207', dot:'#eab308' },
+  'In Progress':{ bg:'#ede9fe', color:'#6d28d9', dot:'#8b5cf6' },
+  Completed:   { bg:'#dbeafe', color:'#1d4ed8', dot:'#3b82f6' },
+  Cancelled:   { bg:'#fee2e2', color:'#b91c1c', dot:'#ef4444' },
 }
 
 const NAV_GROUPS = [
@@ -124,19 +126,19 @@ export default function DashboardPage() {
 
   const initials = (user.displayName || user.email || '?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()
   const unread   = notifs.filter(n => !n.read).length
-  const upcoming = bookings.filter(b => b.status==='Confirmed' || b.status==='Pending')
+  const upcoming = bookings.filter(b => b.status==='Confirmed' || b.status==='Pending' || b.status==='In Progress')
 
   const goTo = (key) => { setActive(key); setSidebar(false) }
 
   return (
-    <div className="min-h-screen flex" style={{ background:'linear-gradient(160deg,#eef2ff 0%,#f5f8ff 50%,#fff8f5 100%)' }}>
+    <div className="flex" style={{ background:'linear-gradient(160deg,#eef2ff 0%,#f5f8ff 50%,#fff8f5 100%)', minHeight:'100vh' }}>
 
       {/* Sidebar overlay (mobile) */}
       {sidebar && <div className="fixed inset-0 z-40 lg:hidden" style={{ background:'rgba(5,15,40,0.55)', backdropFilter:'blur(4px)' }} onClick={() => setSidebar(false)} />}
 
       {/* ── Sidebar ── */}
-      <aside className={`fixed top-0 left-0 h-full z-50 flex flex-col transition-transform duration-300 ${sidebar ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex`}
-        style={{ width:'264px', minWidth:'264px', background:'linear-gradient(175deg,#0b1a3d 0%,#0a2558 50%,#0d2870 100%)', flexShrink:0, boxShadow:'4px 0 32px rgba(5,15,50,0.25)' }}>
+      <aside className={`fixed top-0 left-0 z-50 flex flex-col transition-transform duration-300 ${sidebar ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:sticky lg:top-0 lg:self-stretch`}
+        style={{ width:'264px', minWidth:'264px', background:'linear-gradient(175deg,#0b1a3d 0%,#0a2558 50%,#0d2870 100%)', flexShrink:0, boxShadow:'4px 0 32px rgba(5,15,50,0.25)', height:'100vh', overflowY:'auto' }}>
 
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom:'1px solid rgba(255,255,255,0.07)' }}>
@@ -174,7 +176,7 @@ export default function DashboardPage() {
           {NAV_GROUPS.map((group) => (
             <div key={group.label}>
               <p className="px-3 pt-5 pb-2 font-black uppercase"
-                style={{ fontSize:'9px', color:'rgba(255,255,255,0.2)', letterSpacing:'0.15em' }}>
+                style={{ fontSize:'10px', color:'rgba(255,255,255,0.4)', letterSpacing:'0.13em' }}>
                 {group.label}
               </p>
               {group.items.map(({ key, label, icon }) => {
@@ -184,12 +186,12 @@ export default function DashboardPage() {
                     className={`dash-nav-btn w-full flex items-center gap-3 py-2.5 text-left ${isA ? 'dash-nav-active' : ''}`}
                     style={{
                       background: isA ? 'linear-gradient(90deg,rgba(249,115,22,0.2),rgba(249,115,22,0.06))' : 'transparent',
-                      color: isA ? '#fb923c' : 'rgba(255,255,255,0.55)',
+                      color: isA ? '#fb923c' : 'rgba(255,255,255,0.82)',
                       border: 'none',
                       borderLeft: isA ? '3px solid #f97316' : '3px solid transparent',
                       borderRadius: isA ? '0 12px 12px 0' : '12px',
                       paddingLeft: '14px', paddingRight: '12px',
-                      fontSize:'13px', fontWeight: isA ? 700 : 500,
+                      fontSize:'13.5px', fontWeight: isA ? 700 : 500,
                       cursor:'pointer', marginBottom:'1px',
                     }}>
                     <NavIcon type={icon} active={isA} />
@@ -210,17 +212,17 @@ export default function DashboardPage() {
         {/* Bottom */}
         <div className="px-3 pb-5" style={{ borderTop:'1px solid rgba(255,255,255,0.07)', paddingTop:'14px', marginTop:'4px' }}>
           <Link to="/" className="flex items-center gap-3 px-4 py-2.5 rounded-xl mb-1"
-            style={{ textDecoration:'none', color:'rgba(255,255,255,0.45)', fontSize:'13px', fontWeight:500, transition:'all 0.15s ease' }}
+            style={{ textDecoration:'none', color:'rgba(255,255,255,0.75)', fontSize:'13.5px', fontWeight:500, transition:'all 0.15s ease' }}
             onMouseEnter={e=>{e.currentTarget.style.color='white';e.currentTarget.style.background='rgba(255,255,255,0.08)'}}
-            onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.45)';e.currentTarget.style.background='transparent'}}>
+            onMouseLeave={e=>{e.currentTarget.style.color='rgba(255,255,255,0.75)';e.currentTarget.style.background='transparent'}}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="17" height="17"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
             Back to Website
           </Link>
           <button onClick={async () => { await signOut(auth); navigate('/') }}
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left"
-            style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(239,68,68,0.6)', fontSize:'13px', fontWeight:500, transition:'all 0.15s ease' }}
-            onMouseEnter={e=>{e.currentTarget.style.color='#ef4444';e.currentTarget.style.background='rgba(239,68,68,0.08)'}}
-            onMouseLeave={e=>{e.currentTarget.style.color='rgba(239,68,68,0.6)';e.currentTarget.style.background='none'}}>
+            style={{ background:'none', border:'none', cursor:'pointer', color:'#f87171', fontSize:'13.5px', fontWeight:600, transition:'all 0.15s ease' }}
+            onMouseEnter={e=>{e.currentTarget.style.color='#fca5a5';e.currentTarget.style.background='rgba(239,68,68,0.12)'}}
+            onMouseLeave={e=>{e.currentTarget.style.color='#f87171';e.currentTarget.style.background='none'}}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="17" height="17"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             Log Out
           </button>
@@ -265,7 +267,7 @@ export default function DashboardPage() {
           {!dataLoading && <>
             {active === 'overview'      && <OverviewSection user={user} bookings={bookings} upcoming={upcoming} goTo={goTo} />}
             {active === 'bookings'      && <BookingsSection bookings={bookings} setBookings={setBookings} uid={user.uid} />}
-            {active === 'book'          && <BookRideSection uid={user.uid} userEmail={user.email} userName={user.displayName||''} setBookings={setBookings} />}
+            {active === 'book'          && <BookRideSection uid={user.uid} userEmail={user.email} userName={user.displayName||''} setBookings={setBookings} setNotifs={setNotifs} />}
             {active === 'history'       && <HistorySection bookings={bookings} setBookings={setBookings} uid={user.uid} />}
             {active === 'payments'      && <PaymentsSection payments={payments} />}
             {active === 'profile'       && <ProfileSection user={user} setUser={setUser} />}
@@ -427,23 +429,71 @@ function OverviewSection({ user, bookings, upcoming, goTo }) {
 
       {/* Next ride */}
       {next && (
-        <Card className="p-5 mb-6">
-          <SectionTitle>Next Upcoming Ride</SectionTitle>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {[['Booking ID', next.invoiceId || next.id], ['Date & Time', `${next.date} · ${next.time}`], ['Pickup', next.from], ['Drop-off', next.to], ['Service', next.type], ['Driver', next.driver]].map(([label, val]) => (
-              <div key={label}>
-                <p className="text-gray-400 mb-0.5" style={{ fontSize:'11px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</p>
-                {label === 'Booking ID'
-                  ? <p className="font-black text-[#0a2558]" style={{ fontSize:'14px' }}>{val}</p>
-                  : label === 'Status'
-                    ? <StatusBadge status={val} />
-                    : <p className="font-semibold text-gray-700" style={{ fontSize:'13.5px' }}>{val}</p>
-                }
+        <Card className="overflow-hidden mb-6">
+          {/* Card header */}
+          <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom:'1px solid #f1f5f9', background:'linear-gradient(135deg,#f8faff,#ffffff)' }}>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base" style={{ background:'linear-gradient(135deg,#fff7ed,#ffedd5)', border:'1px solid #fed7aa' }}>🚐</div>
+              <p className="font-black text-[#0a2558]" style={{ fontSize:'14px', letterSpacing:'-0.01em' }}>Next Upcoming Ride</p>
+            </div>
+            <StatusBadge status={next.status} />
+          </div>
+
+          <div className="p-5">
+            {/* Date/Time pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl mb-5" style={{ background:'#f0f6ff', border:'1px solid #dbeafe' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" width="14" height="14"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <p className="font-bold" style={{ fontSize:'13px', color:'#1d4ed8' }}>
+                {(() => { try { return new Date(next.date).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' }) } catch { return next.date } })()}
+                {next.time && ` · ${next.time}`}
+              </p>
+            </div>
+
+            {/* Route visual */}
+            <div className="flex gap-3 mb-5">
+              <div className="flex flex-col items-center" style={{ paddingTop:'14px' }}>
+                <div style={{ width:'11px', height:'11px', borderRadius:'50%', background:'#22c55e', boxShadow:'0 0 0 3px rgba(34,197,94,0.2)', flexShrink:0 }} />
+                <div style={{ width:'2px', minHeight:'32px', flex:1, background:'linear-gradient(180deg,#22c55e 0%,#f97316 100%)', margin:'4px 0', borderRadius:'1px' }} />
+                <div style={{ width:'11px', height:'11px', borderRadius:'50%', background:'#f97316', boxShadow:'0 0 0 3px rgba(249,115,22,0.2)', flexShrink:0 }} />
               </div>
-            ))}
-            <div>
-              <p className="text-gray-400 mb-0.5" style={{ fontSize:'11px', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em' }}>Status</p>
-              <StatusBadge status={next.status} />
+              <div className="flex flex-col gap-2.5 flex-1">
+                <div className="p-3 rounded-xl" style={{ background:'#f0fdf4', border:'1px solid #bbf7d0' }}>
+                  <p style={{ fontSize:'10px', fontWeight:800, color:'#16a34a', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'3px' }}>Pickup</p>
+                  <p className="font-semibold" style={{ fontSize:'13.5px', color:'#1a2e1a' }}>{next.from || '—'}</p>
+                </div>
+                <div className="p-3 rounded-xl" style={{ background:'#fff7ed', border:'1px solid #fed7aa' }}>
+                  <p style={{ fontSize:'10px', fontWeight:800, color:'#ea580c', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:'3px' }}>Drop-off</p>
+                  <p className="font-semibold" style={{ fontSize:'13.5px', color:'#2d1a0e' }}>{next.to || '—'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Service + Driver chips */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="flex items-center gap-2.5 p-3 rounded-xl" style={{ background:'#f8faff', border:'1px solid #e8eef8' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background:'#e8eef8' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2" width="15" height="15"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div>
+                  <p style={{ fontSize:'10px', fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.06em' }}>Service</p>
+                  <p className="font-bold text-[#0a2558]" style={{ fontSize:'12.5px', lineHeight:'1.3' }}>{next.type || '—'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 p-3 rounded-xl" style={{ background:'#f8faff', border:'1px solid #e8eef8' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background:'#e8eef8' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2" width="15" height="15"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                  <p style={{ fontSize:'10px', fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.06em' }}>Driver</p>
+                  <p className="font-bold text-[#0a2558]" style={{ fontSize:'12.5px', lineHeight:'1.3' }}>{next.driver || 'Assigned soon'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Booking ID footer */}
+            <div className="flex items-center gap-1.5 pt-3" style={{ borderTop:'1px solid #f1f5f9' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="2" width="12" height="12"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+              <p style={{ fontSize:'11.5px', color:'#cbd5e1', fontFamily:'monospace', letterSpacing:'0.02em' }}>{next.invoiceId || (next.id?.slice(0,18) + '…')}</p>
             </div>
           </div>
         </Card>
@@ -487,7 +537,7 @@ function BookingsSection({ bookings, setBookings, uid }) {
   const [ratingText, setRatingText]     = useState('')
 
   const filtered = bookings.filter(b => {
-    if (tab === 'Upcoming')  return b.status === 'Confirmed' || b.status === 'Pending'
+    if (tab === 'Upcoming')  return b.status === 'Confirmed' || b.status === 'Pending' || b.status === 'In Progress'
     if (tab === 'Past')      return b.status === 'Completed'
     if (tab === 'Cancelled') return b.status === 'Cancelled'
     return true
@@ -507,19 +557,37 @@ function BookingsSection({ bookings, setBookings, uid }) {
   }
 
   const doRate = async () => {
-    await rateBooking(uid, ratingModal, ratingVal)
+    await rateBooking(uid, ratingModal, ratingVal, ratingText)
     setBookings(prev => prev.map(b => b.id === ratingModal ? { ...b, rating: ratingVal } : b))
     setRatingModal(null); setRatingVal(0); setRatingText('')
   }
 
+  const tabCounts = {
+    Upcoming:  bookings.filter(b => b.status==='Confirmed' || b.status==='Pending' || b.status==='In Progress').length,
+    Past:      bookings.filter(b => b.status==='Completed').length,
+    Cancelled: bookings.filter(b => b.status==='Cancelled').length,
+  }
+
   return (
     <div className="dash-section">
-      <div className="flex gap-2 mb-6 flex-wrap">
+      {/* Tab bar */}
+      <div className="flex gap-1 mb-6 p-1 rounded-2xl" style={{ background:'white', border:'1px solid #e8eef8', width:'fit-content', boxShadow:'0 2px 8px rgba(10,37,88,0.05)' }}>
         {['Upcoming','Past','Cancelled'].map(t => (
           <button key={t} onClick={() => setTab(t)}
-            className="px-5 py-2 rounded-xl font-bold text-sm"
-            style={{ background: tab===t ? 'linear-gradient(135deg,#0a2558,#1e40af)' : 'white', color: tab===t ? 'white' : '#64748b', border: tab===t ? 'none' : '1px solid #e2e8f0', cursor:'pointer', boxShadow: tab===t ? '0 4px 14px rgba(10,37,88,0.25)' : 'none', transition:'all 0.15s ease' }}>
+            className="flex items-center gap-2 rounded-xl font-bold"
+            style={{
+              background: tab===t ? 'linear-gradient(135deg,#0a2558,#1e40af)' : 'transparent',
+              color: tab===t ? 'white' : '#64748b',
+              border: 'none', cursor:'pointer', fontSize:'13px',
+              padding:'8px 18px', transition:'all 0.15s ease',
+              boxShadow: tab===t ? '0 4px 14px rgba(10,37,88,0.22)' : 'none',
+            }}>
             {t}
+            {tabCounts[t] > 0 && (
+              <span style={{ background: tab===t ? 'rgba(255,255,255,0.22)' : '#f1f5f9', color: tab===t ? 'white' : '#64748b', borderRadius:'999px', fontSize:'11px', fontWeight:700, padding:'1px 7px' }}>
+                {tabCounts[t]}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -528,72 +596,102 @@ function BookingsSection({ bookings, setBookings, uid }) {
         ? <EmptyState emoji="📭" label={`No ${tab.toLowerCase()} bookings`} />
         : <div className="flex flex-col gap-4">
             {filtered.map(b => {
-              const statusAccent = { Confirmed:'#22c55e', Pending:'#f59e0b', Completed:'#3b82f6', Cancelled:'#ef4444' }
-              const accent = statusAccent[b.status] || '#e2e8f0'
+              const accentMap = { Confirmed:'#22c55e', Pending:'#f59e0b', Completed:'#3b82f6', Cancelled:'#ef4444' }
+              const accent = accentMap[b.status] || '#e2e8f0'
               return (
-              <div key={b.id} className="rounded-2xl overflow-hidden dash-card"
-                style={{ background:'white', border:'1px solid #eaeff8', borderLeft:`4px solid ${accent}`, boxShadow:'0 2px 16px rgba(10,37,88,0.06)' }}>
-              <div className="p-5">
-                <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <p className="font-black text-[#0a2558]" style={{ fontSize:'14px' }}>{b.invoiceId || b.id}</p>
-                    <StatusBadge status={b.status} />
-                  </div>
-                  <p className="text-gray-400 font-medium" style={{ fontSize:'12.5px' }}>{b.date} · {b.time}</p>
-                </div>
+                <div key={b.id} className="rounded-2xl overflow-hidden dash-card"
+                  style={{ background:'white', border:'1px solid #eaeff8', boxShadow:'0 2px 16px rgba(10,37,88,0.06)' }}>
 
-                <div className="grid sm:grid-cols-2 gap-3 mb-4">
-                  {[['Pickup', b.from, '#22c55e'], ['Drop-off', b.to, '#f97316']].map(([lbl, val, dot]) => (
-                    <div key={lbl} className="flex items-start gap-2">
-                      <div style={{ width:'8px', height:'8px', borderRadius:'50%', background:dot, marginTop:'5px', flexShrink:0 }} />
+                  {/* Top accent bar */}
+                  <div style={{ height:'3px', background:`linear-gradient(90deg,${accent},${accent}50)` }} />
+
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom:'1px solid #f8fafc' }}>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span style={{ fontSize:'12px', fontWeight:800, color:'#0a2558', background:'#f0f4fb', padding:'3px 10px', borderRadius:'7px', letterSpacing:'0.02em', fontFamily:'monospace' }}>
+                        {b.invoiceId || b.id.slice(0,16)}
+                      </span>
+                      <StatusBadge status={b.status} />
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                      <p style={{ fontSize:'12px', color:'#94a3b8', fontWeight:500 }}>{b.date} · {b.time}</p>
+                    </div>
+                  </div>
+
+                  {/* Route visual */}
+                  <div className="flex gap-3 px-5 py-4">
+                    <div className="flex flex-col items-center" style={{ paddingTop:'13px' }}>
+                      <div style={{ width:'10px', height:'10px', borderRadius:'50%', background:'#22c55e', boxShadow:'0 0 0 3px rgba(34,197,94,0.18)', flexShrink:0 }} />
+                      <div style={{ width:'2px', minHeight:'22px', flex:1, background:'linear-gradient(180deg,#22c55e,#f97316)', margin:'4px 0', borderRadius:'1px' }} />
+                      <div style={{ width:'10px', height:'10px', borderRadius:'50%', background:'#f97316', boxShadow:'0 0 0 3px rgba(249,115,22,0.18)', flexShrink:0 }} />
+                    </div>
+                    <div className="flex flex-col gap-3 flex-1">
                       <div>
-                        <p className="text-gray-400" style={{ fontSize:'11px', fontWeight:700, textTransform:'uppercase' }}>{lbl}</p>
-                        <p className="text-gray-700 font-semibold" style={{ fontSize:'13px' }}>{val}</p>
+                        <p style={{ fontSize:'10px', fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:'2px' }}>Pickup</p>
+                        <p className="font-semibold" style={{ fontSize:'13.5px', color:'#1e293b' }}>{b.from || '—'}</p>
+                      </div>
+                      <div>
+                        <p style={{ fontSize:'10px', fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:'2px' }}>Drop-off</p>
+                        <p className="font-semibold" style={{ fontSize:'13.5px', color:'#1e293b' }}>{b.to || '—'}</p>
                       </div>
                     </div>
-                  ))}
-                  <div>
-                    <p className="text-gray-400" style={{ fontSize:'11px', fontWeight:700, textTransform:'uppercase' }}>Service Type</p>
-                    <p className="text-gray-700 font-semibold" style={{ fontSize:'13px' }}>{b.type}</p>
                   </div>
-                  <div>
-                    <p className="text-gray-400" style={{ fontSize:'11px', fontWeight:700, textTransform:'uppercase' }}>Driver</p>
-                    <p className="text-gray-700 font-semibold" style={{ fontSize:'13px' }}>{b.driver}</p>
-                  </div>
-                </div>
 
-                {/* Action buttons */}
-                <div className="flex gap-2 flex-wrap" style={{ borderTop:'1px solid #f1f5f9', paddingTop:'12px' }}>
-                  {(b.status === 'Confirmed' || b.status === 'Pending') && <>
-                    <button onClick={() => setReschedModal(b.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
-                      style={{ background:'#f0f7ff', color:'#1d4ed8', border:'none', cursor:'pointer', fontSize:'12.5px' }}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                      Reschedule
-                    </button>
-                    <button onClick={() => setCancelModal(b.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
-                      style={{ background:'#fef2f2', color:'#ef4444', border:'none', cursor:'pointer', fontSize:'12.5px' }}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
-                      Cancel Ride
-                    </button>
-                  </>}
+                  {/* Service + Driver */}
+                  <div className="grid grid-cols-2 gap-3 px-5 pb-4 pt-1" style={{ borderTop:'1px solid #f8fafc' }}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background:'#f0f4fb' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2" width="14" height="14"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                      </div>
+                      <div>
+                        <p style={{ fontSize:'10px', color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.06em' }}>Service</p>
+                        <p style={{ fontSize:'12.5px', fontWeight:600, color:'#0a2558', lineHeight:'1.3' }}>{b.type || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background:'#f0f4fb' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0a2558" strokeWidth="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      </div>
+                      <div>
+                        <p style={{ fontSize:'10px', color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.06em' }}>Driver</p>
+                        <p style={{ fontSize:'12.5px', fontWeight:600, color:'#0a2558', lineHeight:'1.3' }}>{b.driver || 'Assigned soon'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  {(b.status === 'Confirmed' || b.status === 'Pending') && (
+                    <div className="flex gap-2 flex-wrap px-5 pb-4" style={{ borderTop:'1px solid #f8fafc', paddingTop:'12px' }}>
+                      <button onClick={() => setReschedModal(b.id)}
+                        className="flex items-center gap-1.5 rounded-xl font-semibold"
+                        style={{ background:'#f0f7ff', color:'#1d4ed8', border:'1px solid #bfdbfe', cursor:'pointer', fontSize:'12.5px', padding:'8px 16px' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        Reschedule
+                      </button>
+                      <button onClick={() => setCancelModal(b.id)}
+                        className="flex items-center gap-1.5 rounded-xl font-semibold"
+                        style={{ background:'#fef2f2', color:'#ef4444', border:'1px solid #fecaca', cursor:'pointer', fontSize:'12.5px', padding:'8px 16px' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        Cancel Ride
+                      </button>
+                    </div>
+                  )}
                   {b.status === 'Completed' && (
-                    b.rating
-                      ? <div className="flex items-center gap-2">
-                          <Stars value={b.rating} />
-                          <span className="text-gray-400" style={{ fontSize:'12px' }}>Your rating</span>
-                        </div>
-                      : <button onClick={() => { setRatingModal(b.id); setRatingVal(0) }}
-                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
-                          style={{ background:'#fffbeb', color:'#d97706', border:'none', cursor:'pointer', fontSize:'12.5px' }}>
-                          ⭐ Rate this ride
-                        </button>
+                    <div className="px-5 pb-4 flex items-center gap-3" style={{ borderTop:'1px solid #f8fafc', paddingTop:'12px' }}>
+                      {b.rating
+                        ? <div className="flex items-center gap-2"><Stars value={b.rating} /><span style={{ fontSize:'12px', color:'#64748b' }}>Your rating</span></div>
+                        : <button onClick={() => { setRatingModal(b.id); setRatingVal(0) }}
+                            className="flex items-center gap-1.5 rounded-xl font-semibold"
+                            style={{ background:'#fffbeb', color:'#d97706', border:'1px solid #fde68a', cursor:'pointer', fontSize:'12.5px', padding:'8px 16px' }}>
+                            ⭐ Rate this ride
+                          </button>
+                      }
+                    </div>
                   )}
                 </div>
-              </div>
-              </div>
-            )})}
+              )
+            })}
           </div>
       }
 
@@ -649,8 +747,18 @@ function BookingsSection({ bookings, setBookings, uid }) {
   )
 }
 
+/* ── email helper ── */
+const W3F_KEY = 'c15d63e8-4586-448e-9ba5-a49985846973'
+const sendBookingEmails = async ({ from, to, date, time, type, userName, userEmail, invoiceId }) => {
+  const adminMsg = `New booking from dashboard:\n\nName: ${userName}\nEmail: ${userEmail}\nInvoice: ${invoiceId}\nService: ${type}\nPickup: ${from}\nDrop-off: ${to}\nDate: ${date} at ${time}`
+  try {
+    await fetch('https://api.web3forms.com/submit', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ access_key:W3F_KEY, name:userName||'Dashboard User', email:userEmail||'noreply@dmctransport.us', replyto:userEmail||'noreply@dmctransport.us', subject:`New Booking — ${type} on ${date}`, message:adminMsg }) })
+  } catch {}
+}
+
 /* ── BOOK A RIDE ── */
-function BookRideSection({ uid, userEmail, userName, setBookings }) {
+function BookRideSection({ uid, userEmail, userName, setBookings, setNotifs }) {
   const [form, setForm] = useState({ from:'', to:'', date:'', time:'', type:'Medical Appointment', passengers:'1', notes:'', recurring:false, recurringFreq:'Weekly' })
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -667,6 +775,15 @@ function BookRideSection({ uid, userEmail, userName, setBookings }) {
       const updated = await getBookings(uid)
       setBookings(updated)
       setDone(true)
+      addNotification(uid, {
+        icon: '🚐',
+        title: 'Booking Request Sent!',
+        msg: `Your ${form.type} ride request (${invoiceId}) has been submitted for ${form.date} at ${form.time}. Our team will confirm shortly.`,
+      }).then(async () => {
+        const n = await getNotifications(uid)
+        setNotifs(n)
+      }).catch(() => {})
+      sendBookingEmails({ ...form, userName, userEmail, invoiceId }).catch(() => {})
     } catch (err) { console.error('Booking error:', err) }
     finally { setLoading(false) }
   }
@@ -782,7 +899,7 @@ function HistorySection({ bookings, setBookings, uid }) {
   const past = bookings.filter(b => b.status === 'Completed' || b.status === 'Cancelled')
 
   const doRate = async () => {
-    await rateBooking(uid, ratingModal, ratingVal)
+    await rateBooking(uid, ratingModal, ratingVal, ratingText)
     setBookings(prev => prev.map(b => b.id === ratingModal ? { ...b, rating: ratingVal } : b))
     setRatingModal(null); setRatingVal(0); setRatingText('')
   }
@@ -959,6 +1076,30 @@ function PaymentsSection({ payments }) {
   const total    = payments.filter(p=>p.status==='Paid').reduce((s,p)=>s+parseFloat((p.amount||'0').replace('$','')||0),0)
   const lastPay  = payments.find(p=>p.status==='Paid')
 
+  const downloadReceipt = (p) => {
+    const inv = p.invoiceId || p.id
+    const text = [
+      'DELTA CARE TRANSPORT — PAYMENT RECEIPT',
+      '─'.repeat(40),
+      `Invoice ID  : ${inv}`,
+      `Date        : ${p.date || '—'}`,
+      `Description : ${p.desc || '—'}`,
+      `Amount      : ${p.amount || '—'}`,
+      `Method      : ${p.method || '—'}`,
+      `Status      : ${p.status || '—'}`,
+      '─'.repeat(40),
+      'Delta Care Transport',
+      'Phone: (470) 336-7475',
+      'Email: info@dmctransport.us',
+      'Thank you for choosing Delta Care Transport!',
+    ].join('\n')
+    const blob = new Blob([text], { type:'text/plain' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    a.href = url; a.download = `${inv}-receipt.txt`; a.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="dash-section max-w-3xl">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
@@ -987,7 +1128,7 @@ function PaymentsSection({ payments }) {
               <table style={{ width:'100%', borderCollapse:'collapse' }}>
                 <thead>
                   <tr style={{ background:'linear-gradient(135deg,#f8fafc,#f1f5ff)' }}>
-                    {['Invoice','Date','Description','Amount','Method','Status'].map(h=>(
+                    {['Invoice','Date','Description','Amount','Method','Status','Receipt'].map(h=>(
                       <th key={h} style={{ padding:'13px 16px', textAlign:'left', fontSize:'10.5px', fontWeight:800, color:'#64748b', textTransform:'uppercase', letterSpacing:'0.07em', borderBottom:'1px solid #e8eef8', whiteSpace:'nowrap' }}>{h}</th>
                     ))}
                   </tr>
@@ -1003,6 +1144,14 @@ function PaymentsSection({ payments }) {
                       <td style={{ padding:'12px 14px', whiteSpace:'nowrap' }}>
                         <span className="px-2.5 py-1 rounded-full font-bold" style={{ fontSize:'11.5px', background: PAY_STATUS[p.status]?.bg || '#f1f5f9', color: PAY_STATUS[p.status]?.color || '#64748b' }}>{p.status}</span>
                       </td>
+                      <td style={{ padding:'12px 14px' }}>
+                        <button onClick={() => downloadReceipt(p)}
+                          className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold"
+                          style={{ background:'#f0f7ff', color:'#1d4ed8', border:'none', cursor:'pointer', whiteSpace:'nowrap' }}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="11" height="11"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                          Receipt
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -1016,21 +1165,31 @@ function PaymentsSection({ payments }) {
 
 /* ── MY PROFILE ── */
 function ProfileSection({ user, setUser }) {
-  const [form, setForm]     = useState({ displayName: user.displayName||'', phone:'', address:'', emergencyName:'', emergencyPhone:'', emergencyRel:'' })
-  const [medical, setMedical] = useState({ wheelchair:false, oxygen:false, stretcher:false, visualImpaired:false, hearingImpaired:false, notes:'' })
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved]   = useState(false)
-  const [error, setError]   = useState('')
-  const [tab, setTab]       = useState('personal')
+  const [form, setForm]         = useState({ displayName: user.displayName||'', phone:'', address:'', emergencyName:'', emergencyPhone:'', emergencyRel:'' })
+  const [medical, setMedical]   = useState({ wheelchair:false, oxygen:false, stretcher:false, visualImpaired:false, hearingImpaired:false, notes:'' })
+  const [saving, setSaving]     = useState(false)
+  const [medSaving, setMedSaving] = useState(false)
+  const [saved, setSaved]       = useState(false)
+  const [error, setError]       = useState('')
+  const [tab, setTab]           = useState('personal')
+  const [photoLoading, setPhotoLoading] = useState(false)
+  const [emailEdit, setEmailEdit]       = useState(false)
+  const [newEmail, setNewEmail]         = useState('')
+  const [emailSaving, setEmailSaving]   = useState(false)
 
   const initials = (user.displayName||user.email||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()
 
   useEffect(() => {
     if (!user?.uid) return
     getProfile(user.uid).then(data => {
-      if (data.phone || data.address || data.emergencyName) {
-        setForm(f => ({ ...f, phone: data.phone||'', address: data.address||'', emergencyName: data.emergencyName||'', emergencyPhone: data.emergencyPhone||'', emergencyRel: data.emergencyRel||'' }))
-      }
+      setForm(f => ({
+        ...f,
+        phone:          data.phone          || '',
+        address:        data.address        || '',
+        emergencyName:  data.emergencyName  || '',
+        emergencyPhone: data.emergencyPhone || '',
+        emergencyRel:   data.emergencyRel   || '',
+      }))
       if (data.medical) setMedical(data.medical)
     })
   }, [user?.uid])
@@ -1047,8 +1206,51 @@ function ProfileSection({ user, setUser }) {
   }
 
   const handleSaveMedical = async () => {
-    await saveProfile(user.uid, { medical })
-    setSaved(true); setTimeout(()=>setSaved(false), 3000)
+    setMedSaving(true)
+    try {
+      await saveProfile(user.uid, { medical })
+      setSaved(true); setTimeout(()=>setSaved(false), 3000)
+    } catch { setError('Failed to save. Please try again.') }
+    finally { setMedSaving(false) }
+  }
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 3 * 1024 * 1024) { setError('Photo must be under 3 MB.'); return }
+    setPhotoLoading(true); setError('')
+    try {
+      const storageRef = ref(storage, `users/${user.uid}/avatar`)
+      await uploadBytes(storageRef, file)
+      const url = await getDownloadURL(storageRef)
+      await updateProfile(auth.currentUser, { photoURL: url })
+      await saveProfile(user.uid, { photoURL: url })
+      setUser({ ...user, photoURL: url })
+      setSaved(true); setTimeout(()=>setSaved(false), 3000)
+    } catch { setError('Photo upload failed. Please try again.') }
+    finally { setPhotoLoading(false) }
+  }
+
+  const handleEmailChange = async () => {
+    if (!newEmail || newEmail === user.email) return
+    setEmailSaving(true); setError('')
+    try {
+      await updateEmail(auth.currentUser, newEmail)
+      await saveProfile(user.uid, { email: newEmail })
+      setUser({ ...user, email: newEmail })
+      setEmailEdit(false); setNewEmail('')
+      setSaved(true); setTimeout(()=>setSaved(false), 3000)
+    } catch (err) {
+      if (err.code === 'auth/requires-recent-login') {
+        setError('For security, please log out and log back in first, then try again.')
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('This email is already in use by another account.')
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Please enter a valid email address.')
+      } else {
+        setError('Failed to update email. Please try again.')
+      }
+    } finally { setEmailSaving(false) }
   }
 
   return (
@@ -1058,24 +1260,38 @@ function ProfileSection({ user, setUser }) {
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize:'20px 20px' }} />
         <div className="absolute right-0 bottom-0 w-40 h-40 pointer-events-none" style={{ background:'radial-gradient(circle at bottom right, rgba(249,115,22,0.15), transparent 70%)' }} />
         <div className="relative flex items-center gap-4">
-          {user.photoURL
-            ? <img src={user.photoURL} alt="avatar" style={{ width:'72px', height:'72px', borderRadius:'50%', objectFit:'cover', border:'3px solid #f97316', boxShadow:'0 4px 16px rgba(249,115,22,0.4)' }} />
-            : <div style={{ width:'72px', height:'72px', borderRadius:'50%', background:'linear-gradient(135deg,#f97316,#ea580c)', border:'3px solid rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:'0 4px 16px rgba(249,115,22,0.4)' }}>
-                <span className="text-white font-black" style={{ fontSize:'22px' }}>{initials}</span>
-              </div>
-          }
+          {/* Clickable avatar with upload */}
+          <label className="relative cursor-pointer flex-shrink-0" style={{ width:'72px', height:'72px' }}>
+            {user.photoURL
+              ? <img src={user.photoURL} alt="avatar" style={{ width:'72px', height:'72px', borderRadius:'50%', objectFit:'cover', border:'3px solid #f97316', boxShadow:'0 4px 16px rgba(249,115,22,0.4)', display:'block' }} />
+              : <div style={{ width:'72px', height:'72px', borderRadius:'50%', background:'linear-gradient(135deg,#f97316,#ea580c)', border:'3px solid rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 16px rgba(249,115,22,0.4)' }}>
+                  <span className="text-white font-black" style={{ fontSize:'22px' }}>{initials}</span>
+                </div>
+            }
+            {/* Camera overlay */}
+            <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'rgba(0,0,0,0.45)', display:'flex', alignItems:'center', justifyContent:'center', opacity: photoLoading ? 1 : 0, transition:'opacity 0.2s' }}
+              onMouseEnter={e=>{ if (!photoLoading) e.currentTarget.style.opacity='1' }}
+              onMouseLeave={e=>{ if (!photoLoading) e.currentTarget.style.opacity='0' }}>
+              {photoLoading
+                ? <svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="22" height="22"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg>
+                : <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" width="22" height="22"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              }
+            </div>
+            <input type="file" accept="image/*" style={{ display:'none' }} onChange={handlePhotoUpload} disabled={photoLoading} />
+          </label>
           <div>
             <p className="font-black text-white" style={{ fontSize:'18px', letterSpacing:'-0.01em' }}>{user.displayName||'User'}</p>
             <p style={{ color:'rgba(255,255,255,0.55)', fontSize:'13px' }}>{user.email}</p>
             <span className="inline-block mt-1.5 text-xs font-bold rounded-full px-2.5 py-0.5" style={{ background:'rgba(249,115,22,0.2)', color:'#fed7aa', border:'1px solid rgba(249,115,22,0.3)' }}>Active Member</span>
           </div>
+          <p style={{ position:'absolute', bottom:'10px', right:'14px', fontSize:'10.5px', color:'rgba(255,255,255,0.35)', fontWeight:600 }}>Click photo to change</p>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-5 flex-wrap">
         {[['personal','Personal Info'],['emergency','Emergency Contact'],['medical','Medical Needs']].map(([k,l])=>(
-          <button key={k} onClick={()=>setTab(k)}
+          <button key={k} onClick={()=>{ setTab(k); setError(''); setSaved(false) }}
             className="px-5 py-2 rounded-xl font-bold text-sm"
             style={{ background: tab===k?'linear-gradient(135deg,#0a2558,#1e40af)':'white', color: tab===k?'white':'#64748b', border: tab===k?'none':'1px solid #e2e8f0', cursor:'pointer', boxShadow: tab===k?'0 4px 14px rgba(10,37,88,0.25)':'none', transition:'all 0.15s ease' }}>
             {l}
@@ -1084,7 +1300,7 @@ function ProfileSection({ user, setUser }) {
       </div>
 
       {saved && <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#dcfce7', border:'1px solid #86efac' }}><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="16" height="16"><path d="M20 6L9 17l-5-5"/></svg><p className="text-green-700 font-semibold" style={{ fontSize:'13px' }}>Saved successfully!</p></div>}
-      {error && <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#fef2f2', border:'1px solid #fecaca' }}><p className="text-red-600 font-medium" style={{ fontSize:'13px' }}>{error}</p></div>}
+      {error && <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#fef2f2', border:'1px solid #fecaca' }}><svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><p className="text-red-600 font-medium" style={{ fontSize:'13px' }}>{error}</p></div>}
 
       <Card className="p-6">
         {tab === 'personal' && (
@@ -1095,11 +1311,31 @@ function ProfileSection({ user, setUser }) {
                 <input type={type} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} placeholder={ph} style={INP} onFocus={focus} onBlur={blur} />
               </div>
             ))}
+
+            {/* Email with change option */}
             <div>
-              <label className="block font-semibold text-[#0a2558] mb-1.5" style={{ fontSize:'13px' }}>Email Address</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="font-semibold text-[#0a2558]" style={{ fontSize:'13px' }}>Email Address</label>
+                <button type="button" onClick={()=>{ setEmailEdit(v=>!v); setNewEmail(''); setError('') }}
+                  style={{ fontSize:'11.5px', color:'#1d4ed8', fontWeight:700, background:'none', border:'none', cursor:'pointer', padding:0 }}>
+                  {emailEdit ? 'Cancel' : 'Change Email'}
+                </button>
+              </div>
               <input value={user.email} disabled style={{ ...INP, background:'#f8fafc', color:'#94a3b8', cursor:'not-allowed' }} />
-              <p className="text-gray-400 mt-1" style={{ fontSize:'11.5px' }}>Email cannot be changed here.</p>
+              {emailEdit && (
+                <div className="mt-2 flex flex-col gap-2">
+                  <input type="email" value={newEmail} onChange={e=>setNewEmail(e.target.value)} placeholder="Enter new email address"
+                    style={INP} onFocus={focus} onBlur={blur} />
+                  <button type="button" onClick={handleEmailChange} disabled={emailSaving || !newEmail}
+                    className="flex items-center justify-center gap-2 font-bold text-white rounded-xl py-2.5"
+                    style={{ background: emailSaving||!newEmail?'#d1dce8':'linear-gradient(135deg,#1d4ed8,#2563eb)', border:'none', cursor: emailSaving||!newEmail?'not-allowed':'pointer', fontSize:'13px' }}>
+                    {emailSaving ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="16" height="16"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Updating…</> : 'Update Email'}
+                  </button>
+                  <p style={{ fontSize:'11.5px', color:'#94a3b8' }}>You may need to log out and back in if prompted for security.</p>
+                </div>
+              )}
             </div>
+
             <button type="submit" disabled={saving} className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-3 mt-1"
               style={{ background: saving?'#d1dce8':'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor: saving?'not-allowed':'pointer', fontSize:'14px' }}>
               {saving ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Saving…</> : 'Save Changes'}
@@ -1120,12 +1356,16 @@ function ProfileSection({ user, setUser }) {
               </div>
             ))}
             <button onClick={async () => {
-                setSaving(true)
-                await saveProfile(user.uid, { emergencyName: form.emergencyName, emergencyPhone: form.emergencyPhone, emergencyRel: form.emergencyRel })
-                setSaved(true); setTimeout(()=>setSaved(false), 3000); setSaving(false)
-              }} disabled={saving} className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-3 mt-1"
-              style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px' }}>
-              Save Emergency Contact
+                setSaving(true); setError('')
+                try {
+                  await saveProfile(user.uid, { emergencyName: form.emergencyName, emergencyPhone: form.emergencyPhone, emergencyRel: form.emergencyRel })
+                  setSaved(true); setTimeout(()=>setSaved(false), 3000)
+                } catch { setError('Failed to save. Please try again.') }
+                finally { setSaving(false) }
+              }} disabled={saving}
+              className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-3 mt-1"
+              style={{ background: saving?'#d1dce8':'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor: saving?'not-allowed':'pointer', fontSize:'14px' }}>
+              {saving ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Saving…</> : 'Save Emergency Contact'}
             </button>
           </div>
         )}
@@ -1146,9 +1386,10 @@ function ProfileSection({ user, setUser }) {
               <textarea value={medical.notes} onChange={e=>setMedical(m=>({...m,notes:e.target.value}))} rows={3} placeholder="Any other medical or mobility notes for our drivers…"
                 style={{ ...INP, resize:'none' }} onFocus={focus} onBlur={blur} />
             </div>
-            <button onClick={handleSaveMedical} className="font-black text-white rounded-xl py-3"
-              style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px' }}>
-              Save Medical Info
+            <button onClick={handleSaveMedical} disabled={medSaving}
+              className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-3"
+              style={{ background: medSaving?'#d1dce8':'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor: medSaving?'not-allowed':'pointer', fontSize:'14px' }}>
+              {medSaving ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="18" height="18"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Saving…</> : 'Save Medical Info'}
             </button>
           </div>
         )}
@@ -2145,35 +2386,66 @@ function ReferralSection({ uid, loyalty, setLoyalty, loyaltyHistory, setLoyaltyH
 
 /* ── ACCOUNT SETTINGS ── */
 function SettingsSection({ user, settings, setSettings }) {
-  const DEFAULT_NOTIF = { bookingConfirmed:true, driverAssigned:true, rideReminder:true, rideCompleted:true, promoOffers:false, smsAlerts:true, emailAlerts:true, appPush:false }
-  const [notifSettings, setNotifSettings] = useState({ ...DEFAULT_NOTIF })
-  const [privacy, setPrivacy] = useState({ shareData:false, analytics:true })
-  const [pwForm, setPwForm]   = useState({ current:'', newPw:'', confirm:'' })
-  const [pwSaved, setPwSaved] = useState(false)
-  const [pwError, setPwError] = useState('')
-  const [tab, setTab]         = useState('notifications')
-  const [saved, setSaved]     = useState(false)
+  const navigate = useNavigate()
+  const [notif, setNotif]       = useState({ emailAlerts:true, smsAlerts:true, rideReminder:true })
+  const [pwForm, setPwForm]     = useState({ current:'', newPw:'', confirm:'' })
+  const [showPw, setShowPw]     = useState({ current:false, newPw:false, confirm:false })
+  const [pwSaved, setPwSaved]   = useState(false)
+  const [pwError, setPwError]   = useState('')
+  const [pwLoading, setPwLoading] = useState(false)
+  const [notifSaved, setNotifSaved] = useState(false)
+  const [notifSaving, setNotifSaving] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [deleteInput, setDeleteInput] = useState('')
+  const [deleting, setDeleting]       = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   useEffect(() => {
     if (Object.keys(settings).length === 0) return
-    setNotifSettings(s => ({ ...s, ...settings }))
-    setPrivacy({ shareData: settings.shareData ?? false, analytics: settings.analytics ?? true })
+    setNotif(n => ({
+      emailAlerts:  settings.emailAlerts  ?? true,
+      smsAlerts:    settings.smsAlerts    ?? true,
+      rideReminder: settings.rideReminder ?? true,
+    }))
   }, [settings])
 
   const Toggle = ({ value, onChange }) => (
     <button type="button" onClick={() => onChange(!value)}
-      className="relative inline-flex items-center rounded-full transition-colors shrink-0"
-      style={{ width:'44px', height:'24px', background: value?'#f97316':'#e2e8f0', border:'none', cursor:'pointer', padding:'2px' }}>
-      <span style={{ width:'20px', height:'20px', borderRadius:'50%', background:'white', boxShadow:'0 1px 4px rgba(0,0,0,0.15)', transform: value?'translateX(20px)':'translateX(0)', transition:'transform 0.2s', display:'block' }} />
+      className="relative inline-flex items-center rounded-full shrink-0"
+      style={{ width:'46px', height:'26px', background:value?'#f97316':'#e2e8f0', border:'none', cursor:'pointer', padding:'3px', transition:'background 0.2s' }}>
+      <span style={{ width:'20px', height:'20px', borderRadius:'50%', background:'white', boxShadow:'0 1px 4px rgba(0,0,0,0.18)', transform:value?'translateX(20px)':'translateX(0)', transition:'transform 0.2s', display:'block' }} />
     </button>
   )
 
-  const setN = (key, val) => setNotifSettings(s => ({ ...s, [key]: val }))
+  const pwStrength = (pw) => {
+    if (!pw) return null
+    let s = 0
+    if (pw.length >= 8) s++
+    if (/[A-Z]/.test(pw)) s++
+    if (/[0-9]/.test(pw)) s++
+    if (/[^A-Za-z0-9]/.test(pw)) s++
+    if (s <= 1) return { label:'Weak',   color:'#ef4444', w:'25%'  }
+    if (s === 2) return { label:'Fair',   color:'#f97316', w:'50%'  }
+    if (s === 3) return { label:'Good',   color:'#eab308', w:'75%'  }
+    return              { label:'Strong', color:'#22c55e', w:'100%' }
+  }
+  const strength = pwStrength(pwForm.newPw)
+
+  const EyeBtn = ({ k }) => (
+    <button type="button" onClick={() => setShowPw(p => ({ ...p, [k]:!p[k] }))}
+      style={{ position:'absolute', right:'12px', top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:'#94a3b8', padding:'2px' }}>
+      {showPw[k]
+        ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="17" height="17"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      }
+    </button>
+  )
 
   const handlePwSave = async (e) => {
     e.preventDefault(); setPwError('')
-    if (pwForm.newPw !== pwForm.confirm) { setPwError('Passwords do not match.'); return }
+    if (pwForm.newPw !== pwForm.confirm) { setPwError('New passwords do not match.'); return }
     if (pwForm.newPw.length < 6) { setPwError('Password must be at least 6 characters.'); return }
+    setPwLoading(true)
     try {
       const credential = EmailAuthProvider.credential(user.email, pwForm.current)
       await reauthenticateWithCredential(auth.currentUser, credential)
@@ -2183,165 +2455,186 @@ function SettingsSection({ user, settings, setSettings }) {
     } catch (err) {
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') setPwError('Current password is incorrect.')
       else if (err.code === 'auth/too-many-requests') setPwError('Too many attempts. Please try again later.')
-      else if (err.code === 'auth/requires-recent-login') setPwError('Please log out and log back in before changing your password.')
-      else setPwError('Password change failed. If you signed up with Google, use Google to manage your password.')
-    }
+      else if (err.code === 'auth/requires-recent-login') setPwError('Please log out and log back in, then try again.')
+      else setPwError('If you signed up with Google, use Google Sign-In to manage your password.')
+    } finally { setPwLoading(false) }
   }
 
-  const notifGroups = [
-    {
-      title: 'Ride Notifications',
-      items: [
-        { key:'bookingConfirmed', label:'Booking Confirmed',  desc:'When a ride is confirmed by our team' },
-        { key:'driverAssigned',   label:'Driver Assigned',    desc:'When a driver is assigned to your ride' },
-        { key:'rideReminder',     label:'Ride Reminder',      desc:'24 hours before your scheduled ride' },
-        { key:'rideCompleted',    label:'Ride Completed',     desc:'After your ride is marked complete' },
-      ]
-    },
-    {
-      title: 'Promotions & Offers',
-      items: [
-        { key:'promoOffers', label:'Promo & Coupon Alerts', desc:'New discounts and limited-time offers' },
-      ]
-    },
-    {
-      title: 'Delivery Channel',
-      items: [
-        { key:'smsAlerts',   label:'SMS / Text Messages', desc:'Receive alerts via text message' },
-        { key:'emailAlerts', label:'Email Notifications', desc:'Receive alerts via email' },
-        { key:'appPush',     label:'Push Notifications',  desc:'Browser push notifications (when supported)' },
-      ]
-    },
-  ]
+  const handleDeleteAccount = async () => {
+    if (deleteInput !== 'DELETE') { setDeleteError('Please type DELETE to confirm.'); return }
+    setDeleting(true); setDeleteError('')
+    try {
+      await deleteUser(auth.currentUser)
+      navigate('/')
+    } catch (err) {
+      if (err.code === 'auth/requires-recent-login') setDeleteError('Please log out and log back in first, then try again.')
+      else setDeleteError('Failed to delete account. Please try again.')
+    } finally { setDeleting(false) }
+  }
+
+  const SectionCard = ({ icon, iconBg, title, desc, children }) => (
+    <div className="rounded-2xl overflow-hidden" style={{ background:'white', border:'1px solid #e8eef8', boxShadow:'0 2px 16px rgba(10,37,88,0.05)' }}>
+      <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom:'1px solid #f1f5f9' }}>
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background:iconBg }}>{icon}</div>
+        <div>
+          <p className="font-black text-[#0a2558]" style={{ fontSize:'14px' }}>{title}</p>
+          {desc && <p style={{ fontSize:'11.5px', color:'#94a3b8', marginTop:'1px' }}>{desc}</p>}
+        </div>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  )
 
   return (
-    <div className="dash-section max-w-xl">
-      {/* Tab nav */}
-      <div className="flex gap-2 mb-5 flex-wrap">
-        {[['notifications','Notifications'],['password','Password'],['privacy','Privacy']].map(([k,l])=>(
-          <button key={k} onClick={()=>setTab(k)}
-            className="px-5 py-2 rounded-xl font-bold text-sm"
-            style={{ background:tab===k?'linear-gradient(135deg,#0a2558,#1e40af)':'white', color:tab===k?'white':'#64748b', border:tab===k?'none':'1px solid #e2e8f0', cursor:'pointer', boxShadow:tab===k?'0 4px 14px rgba(10,37,88,0.25)':'none', transition:'all 0.15s ease' }}>
-            {l}
-          </button>
-        ))}
-      </div>
+    <div className="dash-section max-w-lg flex flex-col gap-4">
 
-      {/* Notifications */}
-      {tab === 'notifications' && (
-        <div className="flex flex-col gap-4">
-          {notifGroups.map(group => (
-            <Card key={group.title} className="overflow-hidden">
-              <div className="px-5 pt-4 pb-3" style={{ borderBottom:'1px solid #f8fafc' }}>
-                <p className="font-black text-[#0a2558]" style={{ fontSize:'13.5px', letterSpacing:'-0.01em' }}>{group.title}</p>
+      {/* ── 1. NOTIFICATION ALERTS ── */}
+      <SectionCard
+        icon={<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>}
+        iconBg="#fff7ed" title="Alert Preferences" desc="Choose how you want to be notified">
+        <div className="flex flex-col gap-0 divide-y divide-[#f8fafc]">
+          {[
+            { key:'emailAlerts',  label:'Email Notifications', desc:'Booking updates sent to your email' },
+            { key:'smsAlerts',    label:'SMS / Text Alerts',   desc:'Ride reminders sent to your phone' },
+            { key:'rideReminder', label:'Ride Day Reminder',   desc:'Alert 24 hrs before your ride' },
+          ].map(item => (
+            <div key={item.key} className="flex items-center justify-between gap-4 py-3.5">
+              <div>
+                <p className="font-semibold text-gray-800" style={{ fontSize:'13.5px' }}>{item.label}</p>
+                <p style={{ fontSize:'12px', color:'#94a3b8', marginTop:'1px' }}>{item.desc}</p>
               </div>
-              <div className="p-5">
-              <div className="flex flex-col gap-4">
-                {group.items.map(item => (
-                  <div key={item.key} className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="font-semibold text-gray-800" style={{ fontSize:'13.5px' }}>{item.label}</p>
-                      <p className="text-gray-400" style={{ fontSize:'12px' }}>{item.desc}</p>
-                    </div>
-                    <Toggle value={notifSettings[item.key]} onChange={v=>setN(item.key,v)} />
-                  </div>
-                ))}
-              </div>
+              <Toggle value={notif[item.key]} onChange={v => setNotif(n => ({ ...n, [item.key]:v }))} />
             </div>
-            </Card>
           ))}
-          <button onClick={async () => { await saveSettings(user.uid, notifSettings); setSettings(s=>({...s,...notifSettings})); setSaved(true); setTimeout(()=>setSaved(false),2500) }}
-            className="font-black text-white rounded-xl py-3"
-            style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px' }}>
-            {saved ? '✓ Preferences Saved!' : 'Save Preferences'}
+        </div>
+        <button onClick={async () => {
+            setNotifSaving(true)
+            await saveSettings(user.uid, notif)
+            setSettings(s => ({ ...s, ...notif }))
+            setNotifSaved(true); setTimeout(()=>setNotifSaved(false), 2500)
+            setNotifSaving(false)
+          }}
+          className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-2.5 w-full mt-4"
+          style={{ background:notifSaved?'linear-gradient(135deg,#15803d,#16a34a)':notifSaving?'#d1dce8':'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'13.5px', transition:'background 0.2s' }}>
+          {notifSaving
+            ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="15" height="15"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Saving…</>
+            : notifSaved
+              ? <><svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="15" height="15"><path d="M20 6L9 17l-5-5"/></svg> Saved!</>
+              : 'Save Preferences'
+          }
+        </button>
+      </SectionCard>
+
+      {/* ── 2. CHANGE PASSWORD ── */}
+      <SectionCard
+        icon={<svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="2" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>}
+        iconBg="#eff6ff" title="Change Password" desc={`Logged in as ${user.email}`}>
+
+        {pwSaved && (
+          <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#dcfce7', border:'1px solid #86efac' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="15" height="15"><path d="M20 6L9 17l-5-5"/></svg>
+            <p className="text-green-700 font-semibold" style={{ fontSize:'13px' }}>Password updated!</p>
+          </div>
+        )}
+        {pwError && (
+          <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#fef2f2', border:'1px solid #fecaca' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <p className="text-red-600 font-medium" style={{ fontSize:'13px' }}>{pwError}</p>
+          </div>
+        )}
+
+        <form onSubmit={handlePwSave} className="flex flex-col gap-3.5">
+          {[['Current Password','current'],['New Password','newPw'],['Confirm New Password','confirm']].map(([lbl,key])=>(
+            <div key={key}>
+              <label className="block font-semibold text-[#0a2558] mb-1.5" style={{ fontSize:'13px' }}>{lbl}</label>
+              <div style={{ position:'relative' }}>
+                <input required type={showPw[key]?'text':'password'} value={pwForm[key]}
+                  onChange={e=>setPwForm(f=>({...f,[key]:e.target.value}))}
+                  placeholder="••••••••" style={{ ...INP, paddingRight:'42px' }} onFocus={focus} onBlur={blur} />
+                <EyeBtn k={key} />
+              </div>
+              {key==='newPw' && pwForm.newPw && strength && (
+                <div className="mt-1.5 flex items-center gap-2">
+                  <div className="flex-1 rounded-full" style={{ height:'3px', background:'#f1f5f9' }}>
+                    <div className="rounded-full" style={{ height:'3px', width:strength.w, background:strength.color, transition:'width 0.3s' }} />
+                  </div>
+                  <p style={{ fontSize:'11px', color:strength.color, fontWeight:700, flexShrink:0 }}>{strength.label}</p>
+                </div>
+              )}
+            </div>
+          ))}
+          <p style={{ fontSize:'12px', color:'#94a3b8', lineHeight:'1.5' }}>
+            💡 Signed up with Google? You may not have a password — use Google Sign-In instead.
+          </p>
+          <button type="submit" disabled={pwLoading}
+            className="flex items-center justify-center gap-2 font-black text-white rounded-xl py-3"
+            style={{ background:pwLoading?'#d1dce8':'linear-gradient(135deg,#1d4ed8,#2563eb)', border:'none', cursor:pwLoading?'not-allowed':'pointer', fontSize:'14px' }}>
+            {pwLoading
+              ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="16" height="16"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Updating…</>
+              : 'Update Password'
+            }
+          </button>
+        </form>
+      </SectionCard>
+
+      {/* ── 3. DELETE ACCOUNT ── */}
+      <div className="rounded-2xl overflow-hidden" style={{ border:'1.5px solid #fecaca', background:'white', boxShadow:'0 2px 16px rgba(220,38,38,0.06)' }}>
+        <div className="flex items-center gap-2.5 px-5 py-3.5" style={{ background:'#fef2f2', borderBottom:'1px solid #fecaca' }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" width="15" height="15"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p className="font-black text-red-700" style={{ fontSize:'13px' }}>Danger Zone</p>
+        </div>
+        <div className="px-5 py-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-bold text-red-700" style={{ fontSize:'13.5px' }}>Delete My Account</p>
+            <p style={{ fontSize:'12px', color:'#f87171', marginTop:'2px' }}>Permanently removes your account and all data</p>
+          </div>
+          <button onClick={() => { setDeleteModal(true); setDeleteInput(''); setDeleteError('') }}
+            className="px-4 py-2 rounded-xl font-bold shrink-0"
+            style={{ background:'#fef2f2', color:'#dc2626', border:'1.5px solid #fecaca', cursor:'pointer', fontSize:'12.5px' }}>
+            Delete
           </button>
         </div>
-      )}
+      </div>
 
-      {/* Password */}
-      {tab === 'password' && (
-        <Card className="p-6">
-          <p className="font-black text-[#0a2558] mb-1" style={{ fontSize:'15px' }}>Change Password</p>
-          <p className="text-gray-400 mb-5" style={{ fontSize:'13px' }}>Logged in as <strong>{user.email}</strong></p>
-
-          {pwSaved && (
-            <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#dcfce7', border:'1px solid #86efac' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" width="16" height="16"><path d="M20 6L9 17l-5-5"/></svg>
-              <p className="text-green-700 font-semibold" style={{ fontSize:'13px' }}>Password updated successfully!</p>
-            </div>
-          )}
-          {pwError && (
-            <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4" style={{ background:'#fef2f2', border:'1px solid #fecaca' }}>
-              <p className="text-red-600 font-medium" style={{ fontSize:'13px' }}>{pwError}</p>
-            </div>
-          )}
-
-          <form onSubmit={handlePwSave} className="flex flex-col gap-4">
-            {[['Current Password','current'],['New Password','newPw'],['Confirm New Password','confirm']].map(([lbl,key])=>(
-              <div key={key}>
-                <label className="block font-semibold text-[#0a2558] mb-1.5" style={{ fontSize:'13px' }}>{lbl}</label>
-                <input required type="password" value={pwForm[key]} onChange={e=>setPwForm(f=>({...f,[key]:e.target.value}))}
-                  placeholder="••••••••" style={INP} onFocus={focus} onBlur={blur} />
+      {/* ── DELETE MODAL ── */}
+      {deleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background:'rgba(10,37,88,0.5)', backdropFilter:'blur(4px)' }}
+          onClick={e => { if (e.target === e.currentTarget) setDeleteModal(false) }}>
+          <div className="w-full max-w-sm rounded-3xl overflow-hidden"
+            style={{ background:'white', boxShadow:'0 24px 60px rgba(10,37,88,0.25)', animation:'dashFadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div className="px-6 pt-6 pb-4 flex items-center gap-3" style={{ borderBottom:'1px solid #fee2e2' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background:'#fef2f2' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               </div>
-            ))}
-            <div className="rounded-xl p-3 flex items-start gap-2" style={{ background:'#fff7ed', border:'1px solid #fed7aa' }}>
-              <span style={{ fontSize:'16px', flexShrink:0 }}>💡</span>
-              <p style={{ fontSize:'12px', color:'#9a3412' }}>If you signed up with Google, you may not have a password. Use Google Sign-In to log in.</p>
+              <div>
+                <p className="font-black text-red-700" style={{ fontSize:'15px' }}>Delete Account</p>
+                <p style={{ fontSize:'11.5px', color:'#94a3b8' }}>This cannot be undone</p>
+              </div>
             </div>
-            <button type="submit" className="font-black text-white rounded-xl py-3"
-              style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px' }}>
-              Update Password
-            </button>
-          </form>
-        </Card>
-      )}
-
-      {/* Privacy */}
-      {tab === 'privacy' && (
-        <div className="flex flex-col gap-4">
-          <Card className="p-5">
-            <p className="font-black text-[#0a2558] mb-4" style={{ fontSize:'14px' }}>Privacy Settings</p>
-            <div className="flex flex-col gap-5">
-              {[
-                { key:'shareData',  label:'Share data with partners', desc:'Allow anonymized trip data to be used for service improvements' },
-                { key:'analytics',  label:'Usage analytics',          desc:'Help us improve by sharing how you use the dashboard' },
-              ].map(item => (
-                <div key={item.key} className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-gray-800" style={{ fontSize:'13.5px' }}>{item.label}</p>
-                    <p className="text-gray-400" style={{ fontSize:'12px' }}>{item.desc}</p>
-                  </div>
-                  <button type="button" onClick={() => setPrivacy(p=>({...p,[item.key]:!p[item.key]}))}
-                    className="relative inline-flex items-center rounded-full transition-colors shrink-0"
-                    style={{ width:'44px', height:'24px', background: privacy[item.key]?'#f97316':'#e2e8f0', border:'none', cursor:'pointer', padding:'2px' }}>
-                    <span style={{ width:'20px', height:'20px', borderRadius:'50%', background:'white', boxShadow:'0 1px 4px rgba(0,0,0,0.15)', transform: privacy[item.key]?'translateX(20px)':'translateX(0)', transition:'transform 0.2s', display:'block' }} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card className="p-5">
-            <p className="font-black text-[#0a2558] mb-3" style={{ fontSize:'14px' }}>Danger Zone</p>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between p-3 rounded-xl" style={{ background:'#fef2f2', border:'1px solid #fecaca' }}>
-                <div>
-                  <p className="font-bold text-red-700" style={{ fontSize:'13.5px' }}>Delete Account</p>
-                  <p className="text-red-400" style={{ fontSize:'12px' }}>Permanently remove your account and all data</p>
-                </div>
-                <button className="px-3 py-1.5 rounded-lg font-bold text-red-600"
-                  style={{ background:'white', border:'1px solid #fecaca', cursor:'pointer', fontSize:'12.5px' }}>
-                  Delete
+            <div className="p-6">
+              <p style={{ fontSize:'13px', color:'#b91c1c', lineHeight:'1.65', marginBottom:'16px' }}>
+                All your bookings, payments, and profile data will be <strong>permanently deleted</strong>.
+              </p>
+              <label className="block font-semibold text-gray-700 mb-2" style={{ fontSize:'13px' }}>
+                Type <span className="font-black text-red-600">DELETE</span> to confirm
+              </label>
+              <input value={deleteInput} onChange={e => { setDeleteInput(e.target.value); setDeleteError('') }}
+                placeholder="DELETE" style={{ ...INP, borderColor:'#fecaca' }} onFocus={focus} onBlur={blur} />
+              {deleteError && <p className="text-red-500 font-semibold mt-2" style={{ fontSize:'12px' }}>{deleteError}</p>}
+              <div className="flex gap-3 mt-5">
+                <button onClick={() => setDeleteModal(false)} className="flex-1 font-bold rounded-xl py-3"
+                  style={{ background:'#f1f5f9', color:'#64748b', border:'none', cursor:'pointer', fontSize:'14px' }}>
+                  Cancel
+                </button>
+                <button onClick={handleDeleteAccount} disabled={deleting}
+                  className="flex-1 flex items-center justify-center gap-2 font-black text-white rounded-xl py-3"
+                  style={{ background:deleting?'#d1dce8':'linear-gradient(135deg,#dc2626,#b91c1c)', border:'none', cursor:deleting?'not-allowed':'pointer', fontSize:'14px' }}>
+                  {deleting ? <><svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" width="16" height="16"><circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="12"/></svg> Deleting…</> : 'Delete Account'}
                 </button>
               </div>
             </div>
-          </Card>
-
-          <button onClick={async () => { await saveSettings(user.uid, privacy); setSettings(s=>({...s,...privacy})); setSaved(true); setTimeout(()=>setSaved(false),2500) }}
-            className="font-black text-white rounded-xl py-3"
-            style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', border:'none', cursor:'pointer', fontSize:'14px' }}>
-            {saved ? '✓ Saved!' : 'Save Privacy Settings'}
-          </button>
+          </div>
         </div>
       )}
     </div>
@@ -2350,45 +2643,203 @@ function SettingsSection({ user, settings, setSettings }) {
 
 /* ── NOTIFICATIONS ── */
 function NotificationsSection({ notifs, setNotifs, uid }) {
-  const unread = notifs.filter(n=>!n.read).length
+  const [expanded, setExpanded]       = useState(null)
+  const [filter, setFilter]           = useState('all')
+  const [confirmClear, setConfirmClear] = useState(false)
+
+  const unread = notifs.filter(n => !n.read).length
+
+  const handleToggle = async (n) => {
+    const isOpening = expanded !== n.id
+    setExpanded(isOpening ? n.id : null)
+    if (isOpening && !n.read) {
+      await markNotifRead(uid, n.id)
+      setNotifs(prev => prev.map(x => x.id === n.id ? { ...x, read:true } : x))
+    }
+  }
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation()
+    if (expanded === id) setExpanded(null)
+    await deleteNotif(uid, id)
+    setNotifs(prev => prev.filter(x => x.id !== id))
+  }
+
+  const handleClearAll = async () => {
+    await deleteAllNotifs(uid)
+    setNotifs([])
+    setExpanded(null)
+    setConfirmClear(false)
+  }
+
+  const getTypeStyle = (n) => {
+    const t = (n.title || '').toLowerCase()
+    if (t.includes('confirm') || t.includes('approved') || t.includes('complete')) return { bg:'#dcfce7', ring:'#bbf7d0' }
+    if (t.includes('cancel'))  return { bg:'#fef2f2', ring:'#fecaca' }
+    if (t.includes('payment') || t.includes('receipt') || t.includes('paid')) return { bg:'#faf5ff', ring:'#e9d5ff' }
+    if (t.includes('welcome')) return { bg:'#fff7ed', ring:'#fed7aa' }
+    return { bg:'#eff6ff', ring:'#bfdbfe' }
+  }
+
+  const filtered = filter === 'unread' ? notifs.filter(n => !n.read) : notifs
+
   return (
-    <div className="dash-section max-w-2xl flex flex-col gap-3">
-      <div className="flex items-center justify-between mb-1 pb-3" style={{ borderBottom:'1px solid #f1f5f9' }}>
-        <div className="flex items-center gap-2.5">
-          <div style={{ width:'4px', height:'22px', background:'linear-gradient(180deg,#f97316,#ea580c)', borderRadius:'3px', boxShadow:'0 2px 8px rgba(249,115,22,0.35)' }} />
+    <div className="dash-section max-w-2xl flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div style={{ width:'4px', height:'24px', background:'linear-gradient(180deg,#f97316,#ea580c)', borderRadius:'3px', boxShadow:'0 2px 8px rgba(249,115,22,0.35)' }} />
           <div>
-            <p className="font-black text-[#0a2558]" style={{ fontSize:'15px', letterSpacing:'-0.01em' }}>Notifications</p>
-            {unread > 0 && <p className="text-gray-400" style={{ fontSize:'11.5px', marginTop:'1px' }}>{unread} unread message{unread > 1 ? 's' : ''}</p>}
+            <p className="font-black text-[#0a2558]" style={{ fontSize:'16px', letterSpacing:'-0.01em' }}>Notifications</p>
+            <p style={{ fontSize:'11.5px', color:'#94a3b8', marginTop:'1px' }}>
+              {unread > 0 ? `${unread} unread message${unread > 1 ? 's' : ''}` : 'All caught up'}
+            </p>
           </div>
           {unread > 0 && (
-            <span className="notif-badge w-6 h-6 rounded-full flex items-center justify-center font-black text-white"
-              style={{ background:'linear-gradient(135deg,#f97316,#ea580c)', fontSize:'11px', boxShadow:'0 2px 8px rgba(249,115,22,0.4)' }}>{unread}</span>
+            <span className="notif-badge flex items-center justify-center font-black text-white"
+              style={{ width:'22px', height:'22px', borderRadius:'50%', background:'linear-gradient(135deg,#f97316,#ea580c)', fontSize:'11px', boxShadow:'0 2px 8px rgba(249,115,22,0.4)' }}>{unread}</span>
           )}
         </div>
-        <button onClick={async () => { await markAllNotifsRead(uid); setNotifs(n=>n.map(x=>({...x,read:true}))) }}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
-          style={{ background:'#fff7ed', border:'1px solid #fed7aa', color:'#ea580c', fontSize:'12.5px', cursor:'pointer' }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="12" height="12"><path d="M20 6L9 17l-5-5"/></svg>
-          Mark all read
-        </button>
+
+        {/* Header actions */}
+        <div className="flex items-center gap-2">
+          <button onClick={async () => { await markAllNotifsRead(uid); setNotifs(n => n.map(x => ({ ...x, read:true }))) }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
+            style={{ background:'#fff7ed', border:'1px solid #fed7aa', color:'#ea580c', fontSize:'12px', cursor:'pointer' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="11" height="11"><path d="M20 6L9 17l-5-5"/></svg>
+            Mark all read
+          </button>
+          {notifs.length > 0 && (
+            <button onClick={() => setConfirmClear(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg font-semibold"
+              style={{ background:'#fef2f2', border:'1px solid #fecaca', color:'#b91c1c', fontSize:'12px', cursor:'pointer' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              Clear all
+            </button>
+          )}
+        </div>
       </div>
-      {notifs.map(n => (
-        <div key={n.id} onClick={async () => { if (!n.read) { await markNotifRead(uid, n.id); setNotifs(prev=>prev.map(x=>x.id===n.id?{...x,read:true}:x)) } }}
-          className="flex items-start gap-4 p-4 rounded-2xl cursor-pointer"
-          style={{ background: n.read?'white':'linear-gradient(135deg,#f0f7ff,#eff6ff)', border:`1px solid ${n.read?'#e8eef8':'#bfdbfe'}`, transition:'all 0.18s ease', boxShadow: n.read?'none':'0 2px 12px rgba(10,37,88,0.07)' }}
-          onMouseEnter={e=>{ e.currentTarget.style.boxShadow='0 6px 20px rgba(10,37,88,0.1)'; e.currentTarget.style.borderColor='#93c5fd' }}
-          onMouseLeave={e=>{ e.currentTarget.style.boxShadow=n.read?'none':'0 2px 12px rgba(10,37,88,0.07)'; e.currentTarget.style.borderColor=n.read?'#e8eef8':'#bfdbfe' }}>
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: n.read?'#f1f5f9':'#dbeafe', fontSize:'18px' }}>{n.icon}</div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-bold text-[#0a2558]" style={{ fontSize:'13.5px' }}>{n.title}</p>
-              {!n.read && <span className="px-2 py-0.5 rounded-full font-bold" style={{ fontSize:'10px', background:'#fef9c3', color:'#a16207', letterSpacing:'0.05em' }}>NEW</span>}
+
+      {/* Filter tabs */}
+      <div className="flex gap-1 mb-4 p-1 rounded-xl" style={{ background:'#f1f5f9' }}>
+        {[['all','All',notifs.length],['unread','Unread',unread]].map(([val,lbl,cnt]) => (
+          <button key={val} onClick={() => { setFilter(val); setExpanded(null) }}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg font-bold"
+            style={{ fontSize:'12.5px', background:filter===val?'white':'transparent', color:filter===val?'#0a2558':'#94a3b8', border:'none', cursor:'pointer', boxShadow:filter===val?'0 1px 4px rgba(0,0,0,0.08)':'none', transition:'all 0.15s' }}>
+            {lbl}
+            {cnt > 0 && (
+              <span style={{ fontSize:'10px', padding:'1px 6px', borderRadius:'10px', fontWeight:800, background:filter===val?(val==='unread'?'#fff7ed':'#e8eef8'):'transparent', color:filter===val?(val==='unread'?'#ea580c':'#64748b'):'#cbd5e1' }}>{cnt}</span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      <div className="flex flex-col gap-2">
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 rounded-2xl" style={{ background:'#f8fafc', border:'1px dashed #e2e8f0' }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background:'#f1f5f9', fontSize:'26px' }}>🔔</div>
+            <p className="font-bold" style={{ fontSize:'14px', color:'#94a3b8' }}>No notifications</p>
+            <p style={{ fontSize:'12.5px', color:'#cbd5e1', marginTop:'4px' }}>You're all caught up!</p>
+          </div>
+        ) : filtered.map(n => {
+          const ts = getTypeStyle(n)
+          const isOpen = expanded === n.id
+          return (
+            <div key={n.id} className="rounded-2xl overflow-hidden"
+              style={{ border:`1px solid ${isOpen ? '#93c5fd' : n.read ? '#e8eef8' : '#c7d7f5'}`, background: isOpen ? '#f8faff' : n.read ? 'white' : 'linear-gradient(135deg,#f8faff,#f0f7ff)', transition:'border-color 0.2s', boxShadow: isOpen ? '0 4px 20px rgba(10,37,88,0.09)' : n.read ? 'none' : '0 2px 10px rgba(10,37,88,0.05)' }}>
+
+              {/* Row — always visible */}
+              <div className="flex items-center gap-3.5 px-4 pt-4 pb-3">
+                <button onClick={() => handleToggle(n)} className="flex items-center gap-3.5 flex-1 min-w-0 text-left"
+                  style={{ background:'none', border:'none', cursor:'pointer', padding:0 }}>
+
+                  {/* Icon + unread dot */}
+                  <div style={{ position:'relative', flexShrink:0 }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                      style={{ background:ts.bg, border:`1.5px solid ${ts.ring}`, fontSize:'17px' }}>{n.icon || '🔔'}</div>
+                    {!n.read && <div style={{ position:'absolute', top:'-3px', right:'-3px', width:'8px', height:'8px', borderRadius:'50%', background:'#f97316', border:'2px solid white' }} />}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <p className="font-bold text-[#0a2558] truncate" style={{ fontSize:'13.5px' }}>{n.title}</p>
+                      {!n.read && <span style={{ fontSize:'9px', padding:'2px 5px', borderRadius:'5px', fontWeight:800, background:'#fff7ed', color:'#ea580c', letterSpacing:'0.06em', flexShrink:0 }}>NEW</span>}
+                    </div>
+                    {!isOpen && (
+                      <p className="truncate" style={{ fontSize:'12.5px', color:'#64748b' }}>{n.msg}</p>
+                    )}
+                    <p style={{ fontSize:'11px', color:'#94a3b8', marginTop:'3px', fontWeight:600 }}>{n.time || timeAgo(n.createdAt)}</p>
+                  </div>
+                </button>
+
+                {/* Right side: chevron + delete */}
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  {/* Delete button */}
+                  <button onClick={(e) => handleDelete(e, n.id)}
+                    title="Delete notification"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    style={{ background:'transparent', border:'1px solid transparent', cursor:'pointer', transition:'all 0.15s', color:'#cbd5e1' }}
+                    onMouseEnter={e => { e.currentTarget.style.background='#fef2f2'; e.currentTarget.style.borderColor='#fecaca'; e.currentTarget.style.color='#ef4444' }}
+                    onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='transparent'; e.currentTarget.style.color='#cbd5e1' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                    </svg>
+                  </button>
+
+                  {/* Chevron */}
+                  <button onClick={() => handleToggle(n)} style={{ background:'none', border:'none', cursor:'pointer', padding:'2px', display:'flex', alignItems:'center' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" width="15" height="15"
+                      style={{ transition:'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                      <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Expanded content */}
+              {isOpen && (
+                <div className="px-4 pb-4">
+                  <div className="rounded-xl p-3.5" style={{ background:'white', border:'1px solid #e8eef8' }}>
+                    <p style={{ fontSize:'13.5px', color:'#374151', lineHeight:'1.75' }}>{n.msg}</p>
+                  </div>
+                </div>
+              )}
             </div>
-            <p className="text-gray-500 mt-0.5" style={{ fontSize:'13px', lineHeight:'1.5' }}>{n.msg}</p>
-            <p className="text-gray-400 mt-1.5" style={{ fontSize:'11px', fontWeight:600 }}>{n.time || timeAgo(n.createdAt)}</p>
+          )
+        })}
+      </div>
+
+      {/* Clear all confirmation modal */}
+      {confirmClear && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background:'rgba(10,37,88,0.45)', backdropFilter:'blur(4px)' }}
+          onClick={e => { if (e.target === e.currentTarget) setConfirmClear(false) }}>
+          <div className="w-full max-w-sm rounded-3xl overflow-hidden"
+            style={{ background:'white', boxShadow:'0 24px 60px rgba(10,37,88,0.22)', animation:'dashFadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div className="p-6 text-center">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                style={{ background:'#fef2f2', fontSize:'26px' }}>🗑️</div>
+              <p className="font-black text-[#0a2558] mb-1" style={{ fontSize:'16px' }}>Clear all notifications?</p>
+              <p style={{ fontSize:'13px', color:'#64748b', lineHeight:'1.6', marginBottom:'20px' }}>
+                This will permanently delete all {notifs.length} notification{notifs.length > 1 ? 's' : ''}. This cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button onClick={() => setConfirmClear(false)}
+                  className="flex-1 py-3 rounded-2xl font-bold"
+                  style={{ background:'#f1f5f9', border:'none', color:'#64748b', fontSize:'13.5px', cursor:'pointer' }}>
+                  Cancel
+                </button>
+                <button onClick={handleClearAll}
+                  className="flex-1 py-3 rounded-2xl font-black text-white"
+                  style={{ background:'linear-gradient(135deg,#ef4444,#b91c1c)', border:'none', fontSize:'13.5px', cursor:'pointer' }}>
+                  Delete all
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      ))}
+      )}
     </div>
   )
 }
